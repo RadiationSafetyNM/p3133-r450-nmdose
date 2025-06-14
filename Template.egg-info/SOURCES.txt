@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+setup.py
+Template.egg-info/PKG-INFO
+Template.egg-info/SOURCES.txt
+Template.egg-info/dependency_links.txt
+Template.egg-info/entry_points.txt
+Template.egg-info/top_level.txt
+logger/__init__.py

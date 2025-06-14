@@ -1,0 +1,16 @@
+---
+title: "p3135-r450-template"
+description: "R과 Python을 사용하는 프로젝트 용"
+author: "BenKorea"
+date: "2025-06-14"
+date-modified: last-modified
+---
+
+
+
+```{r}
+#| label: source
+
+source("_setup.R")
+
+```

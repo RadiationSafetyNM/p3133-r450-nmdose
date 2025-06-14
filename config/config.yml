@@ -1,0 +1,17 @@
+# config/config.yml
+
+default:
+  logging:
+    level: INFO       # 기본 INFO
+
+development:
+  logging:
+    level: DEBUG      # 개발 시 DEBUG
+
+staging:
+  logging:
+    level: WARN       # 스테이징 시 WARN
+
+production:
+  logging:
+    level: ERROR      # 운영 시 ERROR

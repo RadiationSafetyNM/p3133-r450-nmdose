@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: Template
+Version: 0.1.0
+Summary: 프로젝트 설명을 간단히 적어주세요
+Author: BenKorea
+Author-email: benkorea.ai@gmail.com
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: author-email
+Dynamic: description-content-type
+Dynamic: requires-python
+Dynamic: summary

@@ -1,0 +1,7 @@
+iniconfig==2.1.0
+packaging==25.0
+pluggy==1.6.0
+Pygments==2.19.1
+pytest==8.4.0
+PyYAML==6.0.2
+-e git+ssh://git@github.com/BenKorea/p3135-r450-template.git@d1a2d2338f6fa67995e2394a2b38efff7d0cfc8e#egg=Template
