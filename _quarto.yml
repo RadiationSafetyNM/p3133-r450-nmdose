@@ -1,10 +1,10 @@
 project:
   type: website
   output-dir: docs
-  
-exclude:
-  - conquest/**
-
+  render:
+    - "*.qmd"
+    - "!conquest/"    
+    
 
 website:
   title: "NMDose"
@@ -33,6 +33,9 @@ website:
     - title: "개발기록"
       contents:
         - posts/development/development.qmd
+        - section: "인증시스템"
+          contents:
+            - posts/development/auth/auth.qmd
         - section: "opon source"
           href: posts/development/open_source/open_source.qmd
           contents:
@@ -61,7 +64,7 @@ website:
       contents:
         - posts/dicom/dicom.qmd
         - section: "Information"
-          href: posts/dicom/information/information.qmd
+          href: posts/dicom/information/structure.qmd
           contents:
           - posts/dicom/information/structure.qmd     
     - title: "Standardization"
@@ -70,7 +73,11 @@ website:
         - section: "검사명"
           href: posts/standardization/procedure/procedure.qmd
           contents:
-          - posts/standardization/procedure/KNMIP.qmd      
+          - posts/standardization/procedure/KNMIP.qmd
+          
+execute: 
+  freeze: auto
+          
 
 format:
   html:

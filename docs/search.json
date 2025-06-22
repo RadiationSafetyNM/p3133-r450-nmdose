@@ -66,81 +66,39 @@
     ]
   },
   {
-    "objectID": "posts/tools/Slicer.html",
-    "href": "posts/tools/Slicer.html",
-    "title": "Slicer",
+    "objectID": "posts/tools/portainder.html",
+    "href": "posts/tools/portainder.html",
+    "title": "Docker",
     "section": "",
-    "text": "구축 필요성\n개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.\n\n\nSlicer",
-    "crumbs": [
-      "Tools",
-      "Slicer"
-    ]
+    "text": "공식도커사이트(https://docs.docker.com/engine/install/ubuntu/) 내용을 참고하여 진행함"
   },
   {
-    "objectID": "posts/tools/PostgreSQL.html",
-    "href": "posts/tools/PostgreSQL.html",
-    "title": "PostgreSQL",
-    "section": "",
-    "text": "Berkeley Software Distribution (BSD) license",
-    "crumbs": [
-      "Tools",
-      "PostgreSQL"
-    ]
+    "objectID": "posts/tools/portainder.html#사전-준비",
+    "href": "posts/tools/portainder.html#사전-준비",
+    "title": "Docker",
+    "section": "사전 준비",
+    "text": "사전 준비\n\n방화벽 제한 사항\n어려워서 패스\n\n⚠️ 주의\nufw 또는 firewalld를 사용하여 방화벽을 관리하는 경우, Docker를 통해 컨테이너 포트를 노출하면 방화벽 규칙을 우회할 수 있습니다. 자세한 내용은 Docker와 ufw 문서를 참고하세요.\nDocker는 iptables-nft 및 iptables-legacy만 지원합니다. nft를 사용하여 생성한 방화벽 규칙은 Docker에서 동작하지 않습니다. 방화벽 규칙을 적용하려면 iptables 또는 ip6tables를 사용해야 하며, DOCKER-USER 체인에 추가해야 합니다. 자세한 내용은 패킷 필터링 및 방화벽 문서를 참고하세요.\n\n\n\n운영체제 요구 사항\nDocker Engine을 설치하려면 다음 중 하나의 64비트 우분투(Ubuntu) 버전이 필요합니다.\n\nUbuntu Oracular 24.10\nUbuntu Noble 24.04 (LTS)\nUbuntu Jammy 22.04 (LTS)\nUbuntu Focal 20.04 (LTS)\n\nDocker Engine은 다음 아키텍처를 지원합니다: x86_64 (amd64), armhf, arm64, s390x, ppc64le (ppc64el)\n\n📌 참고:\nUbuntu 기반 배포판(예: Linux Mint)은 공식적으로 지원되지 않습니다."
   },
   {
-    "objectID": "posts/tools/PostgreSQL.html#windows-os",
-    "href": "posts/tools/PostgreSQL.html#windows-os",
-    "title": "PostgreSQL",
-    "section": "Windows OS",
-    "text": "Windows OS\n\n완전제거\n\nservices.msc에서 서비스 중지\n제어판에서 제거\n데이터폴더 삭제\n\n\n\n설치/설정 검증\n\nhttps://www.enterprisedb.com/downloads/postgres-postgresql-downloads\n설치경로는 default\n데이터폴더는 E:\\17\n\n노트북에서는 C:\\17설치하였다.\n\nPassword: postres\nPort: 5432\npath 설정은 manual로 해야 한다.\nStack Builder는 굳이 지금단계에서는 설치할 필요 없음\n설치검증은\n\n버전확인\n\n\n\n\nPowerShell\n\npsql --version\n\n\n\n관리자 데이터베이스에 접속하여 검증\n\n\n\n\nPowerShell\n\npsql -U postgres -h localhost -d postgres\n\n\n종료는 exit\n\n\n\nOrthanc를 위한 user/database 만들기\n\n\n\npqsl\n\nCREATE USER nmuser WITH PASSWORD 'nmuser';\n\n\n\n\n\npqsl\n\n\\du\n\n\n\n\n\npqsl\n\nCREATE DATABASE rpacs OWNER nmuser;\n\n\n\n\n\npqsl\n\n\\l",
-    "crumbs": [
-      "Tools",
-      "PostgreSQL"
-    ]
+    "objectID": "posts/tools/portainder.html#이전-버전-제거",
+    "href": "posts/tools/portainder.html#이전-버전-제거",
+    "title": "Docker",
+    "section": "이전 버전 제거",
+    "text": "이전 버전 제거\nDocker Engine을 설치하기 전에 충돌을 방지하기 위해 기존의 비공식 Docker 패키지를 제거해야 합니다.\n\n제거해야 하는 패키지 목록:\n\ndocker.io\ndocker-compose\ndocker-compose-v2\ndocker-doc\npodman-docker\ncontainerd\nrunc\n\nfor 명령어를 사용하면 한줄의 명령어로 모두 제거할 수 있습니다.\n\n\n\nBash\n\nfor pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done\n\n\n완벽제거를 위해서는 다음의 문서를 참고하세요. Docker Engine 설치하기 전에 기존 Docker 제거하기"
   },
   {
-    "objectID": "posts/tools/Orthanc.html",
-    "href": "posts/tools/Orthanc.html",
-    "title": "Orthanc",
-    "section": "",
-    "text": "https://orthanc.uclouvain.be/downloads/windows-64/index.html\n\n\n\n\n{\n  \"Name\" : \"NMResearchPACS\",\n  \"StorageDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"IndexDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"HttpServerEnabled\" : true,\n  \"HttpPort\" : 8042,  \n  \"DicomAet\" : \"ORTHANC\",\n  \"DicomModalities\" : {\n    \"NMPACS\" : [ \"NMPACS\", \"172.17.111.214\", 104 ],\n    \"NMDOSE\" : [ \"NMDOSE\", \"127.0.0.1\", 5678 ],\n    \"SLICER\" : [ \"SLICER\", \"172.17.130.79\", 11112 ]\n  },\n재설치를 대비하여 구글 드라이브에 백업해둠\n\n\n\n{\n    /**\n     * Configuration to use PostgreSQL instead of the default SQLite\n     * back-end of Orthanc. You will have to install the\n     * \"orthanc-postgresql\" package to take advantage of this feature.\n     **/\n    \"PostgreSQL\" : {\n        // Enable the use of PostgreSQL to store the Orthanc index?\n        \"EnableIndex\" : true,\n\n        // Enable the use of PostgreSQL to store the DICOM files?\n        \"EnableStorage\" : false,\n\n        // Option 1: Specify explicit authentication parameters\n        \"Host\" : \"localhost\",\n        \"Port\" : 5432,\n        \"Database\" : \"nmresearchpacs\",\n        \"Username\" : \"nmresearchuser\",\n        \"Password\" : \"nmresearch\",\n\n        // Option 2: Authenticate using PostgreSQL connection URI\n        // \"ConnectionUri\" : \"postgresql://orthanc_user:my_password@localhost:5432/orthanc_db\",\n\n        // Optional: Disable the locking of the PostgreSQL database\n        \"Lock\" : false\n    }\n}\n\n\n\n인바운드 4343 허용",
-    "crumbs": [
-      "Tools",
-      "Orthanc"
-    ]
+    "objectID": "posts/tools/portainder.html#설치",
+    "href": "posts/tools/portainder.html#설치",
+    "title": "Docker",
+    "section": "설치",
+    "text": "설치\n여러가지 설치방법이 있으나 여기서는 apt를 이용한 방법으로 진행\n\nSet up Docker’s apt repository.\n\n\n\nBash\n\nsudo apt-get update\nsudo apt-get install ca-certificates curl\nsudo install -m 0755 -d /etc/apt/keyrings\nsudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc\nsudo chmod a+r /etc/apt/keyrings/docker.asc\n\n\n\nca-certificates: SSL 인증서를 관리하는 패키지로, HTTPS 연결을 신뢰할 수 있도록 설정합니다.\ncurl: 인터넷에서 파일을 다운로드할 수 있도록 하는 명령줄 도구입니다.\ninstall -m 0755 -d /etc/apt/keyrings\n\nm 0755: 디렉토리의 권한을 0755(소유자는 읽기/쓰기/실행 가능, 다른 사용자는 읽기/실행 가능)로 설정\nd: 디렉토리를 생성하는 옵션\n\nf: 요청 실패 시 에러 메시지를 출력\ns: 진행 상태 메시지를 출력하지 않음\nS: -s 옵션과 함께 사용하여 오류 발생 시 메시지를 출력\nL: 리디렉션이 있는 경우 최종 목적지까지 따라감 다운로드된 GPG 키는 /etc/apt/keyrings/docker.asc에 저장됩니다. chmod a+r /etc/apt/keyrings/docker.asc a+r: 모든 사용자(a: all users)에게 읽기(r: read) 권한을 부여 이 설정이 없으면 apt가 GPG 키를 읽을 수 없기 때문에 저장소 검증이 실패할 수 있습니다.\n\n\n\n\nBash\n\necho \\\n  \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \\\n  $(. /etc/os-release && echo \"${UBUNTU_CODENAME:-$VERSION_CODENAME}\") stable\" | \\\n  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null\nsudo apt-get update\n\n\n\ndeb [옵션] 저장소URL 배포판코드네임 [섹션]의 문법을 따릅니다.\ndeb [arch=\\((dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc]\n  - deb: 패키지 저장소를 추가하는 명령어\n  - arch=\\)(dpkg –print-architecture): 현재 시스템의 아키텍처를 출력하는 명령어\n\nsigned-by=/etc/apt/keyrings/docker.asc: GPG 키를 사용하여 저장소를 검증\n\nhttps://download.docker.com/linux/ubuntu\n\n도커 공식 저장소 주소\n\n\\((. /etc/os-release && echo \"\\){UBUNTU_CODENAME:-\\(VERSION_CODENAME}\") stable:\n  - /etc/os-release: 환경변수를 load\n  - && echo \"\\){UBUNTU_CODENAME:-$VERSION_CODENAME}“): CODENAME이 없으면 VERSION_CODENAME을 출력\nsudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null\n\ntee: 파일에 입력한 내용을 출력하고 파일에 저장\n/dev/null: 화면 출력을 무시\n\n\n\n\nInstall the Docker packages.\n\n\n\nBash\n\nsudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin\n\n\n\n\nVerifying by hello-world\n\n\n\nBash\n\nsudo docker run hello-world"
   },
   {
-    "objectID": "posts/tools/Orthanc.html#windows에서의-설치",
-    "href": "posts/tools/Orthanc.html#windows에서의-설치",
-    "title": "Orthanc",
-    "section": "",
-    "text": "https://orthanc.uclouvain.be/downloads/windows-64/index.html\n\n\n\n\n{\n  \"Name\" : \"NMResearchPACS\",\n  \"StorageDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"IndexDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"HttpServerEnabled\" : true,\n  \"HttpPort\" : 8042,  \n  \"DicomAet\" : \"ORTHANC\",\n  \"DicomModalities\" : {\n    \"NMPACS\" : [ \"NMPACS\", \"172.17.111.214\", 104 ],\n    \"NMDOSE\" : [ \"NMDOSE\", \"127.0.0.1\", 5678 ],\n    \"SLICER\" : [ \"SLICER\", \"172.17.130.79\", 11112 ]\n  },\n재설치를 대비하여 구글 드라이브에 백업해둠\n\n\n\n{\n    /**\n     * Configuration to use PostgreSQL instead of the default SQLite\n     * back-end of Orthanc. You will have to install the\n     * \"orthanc-postgresql\" package to take advantage of this feature.\n     **/\n    \"PostgreSQL\" : {\n        // Enable the use of PostgreSQL to store the Orthanc index?\n        \"EnableIndex\" : true,\n\n        // Enable the use of PostgreSQL to store the DICOM files?\n        \"EnableStorage\" : false,\n\n        // Option 1: Specify explicit authentication parameters\n        \"Host\" : \"localhost\",\n        \"Port\" : 5432,\n        \"Database\" : \"nmresearchpacs\",\n        \"Username\" : \"nmresearchuser\",\n        \"Password\" : \"nmresearch\",\n\n        // Option 2: Authenticate using PostgreSQL connection URI\n        // \"ConnectionUri\" : \"postgresql://orthanc_user:my_password@localhost:5432/orthanc_db\",\n\n        // Optional: Disable the locking of the PostgreSQL database\n        \"Lock\" : false\n    }\n}\n\n\n\n인바운드 4343 허용",
-    "crumbs": [
-      "Tools",
-      "Orthanc"
-    ]
-  },
-  {
-    "objectID": "posts/tools/Orthanc.html#wsl2ubuntu-환경에서의-설치",
-    "href": "posts/tools/Orthanc.html#wsl2ubuntu-환경에서의-설치",
-    "title": "Orthanc",
-    "section": "WSL2/Ubuntu 환경에서의 설치",
-    "text": "WSL2/Ubuntu 환경에서의 설치\n\n패키지 목록 업데이트\n\n\n\nbash\n\nsudo apt update\n\n\n\n\nOrthanc 설치\n\n\n\nbash\n\nsudo apt install orthanc\n\n\n\n\northanc.json 설정\n\n\n\northanc.json\n\nsudo nano /etc/orthanc/orthanc.json\n\n\n“Name” : “Orthanc_wsl2”,\n“HttpPort” : 8043,\n“DicomAet” : “ORTHANC_WSL2”\n“DicomPort” : 4243,\n“RemoteAccessAllowed” : false,\n“DicomModalities” : {\n    \"Orthanc-win\" : [ \"ORTHANC\", \"172.21.112.1\", 4242 ],\n    \"NMTEMPSERVER\" : [ \"NMTEMPSERVER\", \"172.21.112.1\", 5681 ],\n    \"NMPACS\" : [ \"NMPACS\", \"172.17.111.214\", 104 ]\n\n\nOrthanc 재시작\n\n\n\nbash\n\nsudo systemctl restart orthanc\n\n\n\n\nOrthanc Explorer2 plugin 설치\n\n설치명령이 잘 작동하지 않아서 웹페이지에서 so 파일을 직접 다운로드 하였다.\n\n\n\n\nbrowse\n\nhttps://github.com/orthanc-server/orthanc-explorer-2/releases\n\n\n\nlibOrthancExplorer2-ubuntu.so 파일을 다운로드하여 /usr/share/orthanc/plugins 폴더에 저장하였다.\northanc.json에서 아래와 같이 설정하였다.\n\n\n\n\northanc.json\n\n\"Plugins\" : {\n  \"OrthancExplorer2\" : {\n    \"Enabled\" : true,\n    \"Path\" : \"/usr/share/orthanc/plugins/libOrthancExplorer2-ubuntu.so\"\n  }\n}\n\n\n\nOrthanc을 재시작하였다.\n\n\n\n\nbash\n\nsudo systemctl restart orthanc\n\n\n\n\n\nbash\n\nsudo apt install orthanc-explorer2\n\n\n\n\nOrthanc systemd 서비스 비활성화\n\n\n\nbash\n\nsudo systemctl disable orthanc\n\n\n\n\nOrthanc 수동 시작\n\n\n\nbash\n\nsudo systemctl start orthanc\n\n\n\n\n윈도우 포트포워딩 점검\n\n\n\npowershell\n\nnetsh interface portproxy show v4tov4\n\n\n\n\n윈도우 포트포워딩 리셋\n\n\n\npowershell\n\nnetsh interface portproxy reset\n\n\n\n\nWSL2_IP 알아내기\n\n\n\nbash\n\nsudo ip addr show eth0 | grep inet\n\n\n172.21.120.237\n\n\n포워딩\n\n\n\npowershell\n\nnetsh interface portproxy add v4tov4 `\n  listenaddress=0.0.0.0 listenport=4242 `\n  connectaddress=172.21.120.237 connectport=4243 `\n  protocol=tcp\n\n\n\n\n방화벽\n\n\n점검\n\n\n\npowershell\n\nnc -vz &lt;NMPACS_IP&gt; 104",
-    "crumbs": [
-      "Tools",
-      "Orthanc"
-    ]
-  },
-  {
-    "objectID": "posts/tools/Orthanc.html#orthanc-docker",
-    "href": "posts/tools/Orthanc.html#orthanc-docker",
-    "title": "Orthanc",
-    "section": "orthanc-docker",
-    "text": "orthanc-docker\n\northanc-docker 폴더이름으로 orthanc 이미지로만 docker-compose를 실행하였다.\ndocker-compose.yml 파일에 docker network를 지정하지 않았기 때문에 orthanc-docker container와 함께 orthanc-docker_default 이름의 network가 만들어졌다.\nDCM4CHEE은 compose로 했을 때의 값을 일단 그대로 해 보았다.\n\n            \"dcm4chee\" : [ \"DCM4CHEE\", \"arc\", 11112 ]\n\n그러나 같은 네트워크에 속해있지 않기 때문에 orthanc-docker에서 DCM4CHEE에 접근할 수 없을 것이다.",
-    "crumbs": [
-      "Tools",
-      "Orthanc"
-    ]
+    "objectID": "posts/tools/portainder.html#portainer-설치",
+    "href": "posts/tools/portainder.html#portainer-설치",
+    "title": "Docker",
+    "section": "Portainer 설치",
+    "text": "Portainer 설치\n\nPortainer 개념\nPortainer는 Docker 및 Kubernetes 컨테이너 관리를 위한 웹 기반 UI 도구입니다.\nCLI(Command Line Interface) 없이도 컨테이너, 이미지, 네트워크, 볼륨 등을 손쉽게 관리할 수 있습니다.\n\n🔹 주요 기능\n\n컨테이너 관리: 실행, 중지, 삭제, 로그 확인\n이미지 관리: 이미지 다운로드, 삭제, 태그 지정\n네트워크 및 볼륨 관리: 컨테이너 간 네트워크 설정 및 데이터 볼륨 관리\n사용자 및 액세스 제어: 여러 사용자와 권한 설정 가능\nSwarm 및 Kubernetes 지원: Docker Swarm과 Kubernetes 클러스터 관리 가능\n\n\n\n\n\nPortainer 설치 방법\nPortainer는 Docker 컨테이너로 실행되므로, Docker가 설치되어 있어야 합니다.\n\n볼륨 생성\nPortainer의 설정 및 데이터는 볼륨(volume)에 저장됩니다.\n\n\n\nBash\n\ndocker volume create portainer_data\n\n\n\n\nPortainer 컨테이너 실행**\n이는 원격으로 이미지다운로드를 포함한다.\n\n\n\nBash\n\ndocker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce\n\n\n\n-d: 백그라운드에서 컨테이너 실행\n-p 8000:8000 -p 9000:9000: 호스트 포트와 컨테이너 포트 매핑\n--name=portainer: 컨테이너 이름 지정\n--restart=always: 컨테이너가 종료되면 자동으로 재시작\n-v /var/run/docker.sock:/var/run/docker.sock: 호스트의 Docker 소켓을 컨테이너 내부로 연결\n-v portainer_data:/data: Portainer 설정 및 데이터를 저장할 볼륨 연결\nportainer/portainer-ce: Portainer 컨테이너 이미지\n\n\n\n실행중인 container 확인\n\n\n\nBash\n\ndocker ps\n\n\n\n\nPortainer 제거\n\n\n\nBash\n\ndocker stop portainer\ndocker rm -f portainer\n\n\n\n\n로그인 id & password\nben benjamin060318\n\n\n\ndocker-compose\nDocker Compose는 다중 컨테이너 애플리케이션을 정의하고 실행하기 위한 도구입니다. 이 도구를 활용하면 개발 및 배포 과정을 간소화하고 효율적으로 관리할 수 있습니다.\nCompose를 사용하면 하나의 이해하기 쉬운 YAML 구성 파일 내에서 서비스, 네트워크, 볼륨 등을 포함한 전체 애플리케이션 스택을 손쉽게 관리할 수 있습니다. 단 한 개의 명령어로 구성 파일에 명시된 모든 서비스를 생성하고 실행할 수 있다는 점이 큰 장점입니다.\nDocker Compose는 프로덕션, 스테이징, 개발, 테스트 환경은 물론 CI 워크플로우 등 다양한 환경에서 활용될 수 있습니다. 또한, 전체 애플리케이션의 라이프사이클을 관리하기 위한 명령어들을 제공하여,\n서비스 시작, 중지, 재구축 실행 중인 서비스의 상태 확인 실행 중인 서비스의 로그 출력 스트리밍 서비스에 대한 일회성 명령 실행 등의 작업을 손쉽게 수행할 수 있습니다.\n\n설치\n\n\n\nBash\n\nsudo apt-get install docker-compose\n\n\n\n\n\nBash\n\ndocker-compose --version\n\n\n\n\n프로젝트 만들기\n/home/user/docker-compose-test 디렉토리를 생성하고, 해당 디렉토리로 이동합니다.\n\n\ndocker-compose.yml 파일 작성\n\n\n\ndocker-compose.yml\n\nversion: '3'\n\nservices:\n  portainer:\n    image: portainer/portainer-ce:latest\n    container_name: portainer\n    restart: always\n    ports:\n      - \"8000:8000\"  # Portainer Agent 통신용\n      - \"9000:9000\"  # Portainer 웹 UI 접속용 (http://localhost:9000)\n      - \"9443:9443\"  # HTTPS 접속용\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n      - portainer_data:/data\n\nvolumes:\n  portainer_data:\n\n\n\n\n실행\n\n\n\nBash\n\ndocker compose up -d"
   },
   {
     "objectID": "posts/tools/dicoogle.html",
@@ -185,237 +143,6 @@
       "Tools",
       "DCM4chee"
     ]
-  },
-  {
-    "objectID": "posts/tools/Conquest.html",
-    "href": "posts/tools/Conquest.html",
-    "title": "Conquest",
-    "section": "",
-    "text": "개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.",
-    "crumbs": [
-      "Tools",
-      "Conquest"
-    ]
-  },
-  {
-    "objectID": "posts/tools/Conquest.html#구축-필요성",
-    "href": "posts/tools/Conquest.html#구축-필요성",
-    "title": "Conquest",
-    "section": "",
-    "text": "개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.",
-    "crumbs": [
-      "Tools",
-      "Conquest"
-    ]
-  },
-  {
-    "objectID": "posts/tools/Conquest.html#window-운영체제에서의-설치",
-    "href": "posts/tools/Conquest.html#window-운영체제에서의-설치",
-    "title": "Conquest",
-    "section": "Window 운영체제에서의 설치",
-    "text": "Window 운영체제에서의 설치\n\n설치파일\n최신 설치파일은 공식사이트가 아닌 Cnquest User Forum에 공개된 2024년 9월 25일 release된 버전 1.5.0e (dicomserver-1.5.0e.zip, https://forum.iq-image.com/forum/index.php?thread/50654-conquest-1-5-0e-released/)가 최신이다.\n\n\n설치방법\n설치방법은 원하는 폴더에서 설치파일의 압축을 풀면된다. 업그레이드시에는 매뉴얼에 따르면 다음의 지시를 따르면 된다. - 기본적으로 exe 및 dll 파일을 교체하면 업데이트 가능하지만, - 일부 설정 파일(dicom.sql, dgatesop.lst, dicom.ini)을 조정할 경우 데이터베이스를 다시 생성해야 할 수도 있습니다. - 서버는 반드시 업데이트 전에 중지해야 하며, 서비스로 실행 중이면 제어판에서 중지 또는 서비스 해제가 필요합니다. - 데이터베이스 재생성이 필요한 경우 매우 오랜 시간이 걸릴 수 있으므로 주의해야 합니다. - 기존 데이터를 유지하려면 dicom.sql을 백업 후 복원하는 것이 좋습니다. - 저자의 경우는 data폴더, acrnema.map, dicom.ini 파일을 제외하고 삭제한 뒤 설치압축파일을 풀면 데이터와 설정이 유지된 체로 업그레이드 하고 database reganeration을 하였다.\n\n\n활용 현황\n이 서버프로그램으로 저자는 NMDose, NMIQ, NMFullData, NMTEMPSERVER, ZettaPACS를 구축하여 선량분석시스템, 영상품질자동화, clinical PACS모사, 임시서버, clinical PACS 모사의 목적으로 사용하고 있다.\n\n\nLua script\n쿼리를 정교하게 할 수 있다.\n\n\n저장파일의 이름을 지정하는 방식\n%id_%studydate%modality_%series_%sopuid.dcm",
-    "crumbs": [
-      "Tools",
-      "Conquest"
-    ]
-  },
-  {
-    "objectID": "posts/tools/Conquest.html#wsl2-ununtu에서의-설치",
-    "href": "posts/tools/Conquest.html#wsl2-ununtu에서의-설치",
-    "title": "Conquest",
-    "section": "WSL2 Ununtu에서의 설치",
-    "text": "WSL2 Ununtu에서의 설치\n\n준비\n\n\n\nbash\n\nsudo apt install build-essential g++ make apache2 php libapache2-mod-php php-sqlite3 unzip p7zip-full lua5.1 liblua5.1-0-dev lua-socket luarocks liblua5.1-0\n\n\n\n\n\nbash\n\nsudo luarocks install luafilesystem\n\n\n\n\n\nbash\n\nsudo a2enmod cgi\nsudo a2enmod rewrite\nsudo sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf\nsudo sed -i 's/memory_limit = 128M/memory_limit = 512M/g' /etc/php/*/apache2/php.ini\nsudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 250M/g' /etc/php/*/apache2/php.ini\nsudo sed -i 's/post_max_size = 8M/post_max_size = 250M/g' /etc/php/*/apache2/php.ini\nsudo systemctl restart apache2\n\n\n\n\n설치파일 다운로드\n\n\n\nbash\n\nwget http://natura-ingenium.nl/dicomserver/dicomserver150e.zip\nmkdir conquest\ncd conquest\nunzip ../dicomserver150e.zip\nrm ../dicomserver150e.zip\n\n\n\n\n컴파일\n\n\n\nbash\n\nchmod 777 maklinux\n./maklinux\n\n\n\nchoose option 3 or 5 SqLite or SqlLite precompiled\nsay ‘y’ to ‘Regenerate the database’ Deletes previous database contents\nsay ‘y’ to ‘Install as service’ Shows status hit ‘q’ to return\n\n비록 아래의 메세지가 나오더라도 정상임\nFailed to stop conquest.service: Unit conquest.service not loaded.\n\n\n\n\n브라우저로 접속\n\nhttp://localhost/app/newweb/ 또는 http://localhost/app/ohif 주소로 접속\n\n\n\nsystemd 설정\n\ndaemon으로 설정되어 있으므로 systemctl로 관리할 수 있다.\n만약에 설정파일을 변경한 후 재시작을 할려면 아래와 같이 한다.\n\n\n\n\nbash\n\nsudo systemctl restart conquest\n\n\n\n정상작동이 되지 않는다고 생각되면 dgate가 아래의 명령으로 실행되고 있는지 확인해 본다.\n\n\n\n\nbash\n\nsystemctl status conquest",
-    "crumbs": [
-      "Tools",
-      "Conquest"
-    ]
-  },
-  {
-    "objectID": "posts/standardization/standardization.html",
-    "href": "posts/standardization/standardization.html",
-    "title": "Standardization",
-    "section": "",
-    "text": "다기관 선량정보수집에 필요한 검사명칭 표준화 현황과 제안",
-    "crumbs": [
-      "표준화",
-      "Standardization"
-    ]
-  },
-  {
-    "objectID": "posts/dicom/information/structure.html",
-    "href": "posts/dicom/information/structure.html",
-    "title": "구조",
-    "section": "",
-    "text": "DICOM Structure",
-    "crumbs": [
-      "DICOM",
-      "Information",
-      "구조"
-    ]
-  },
-  {
-    "objectID": "posts/dicom/conformance/conformance.html",
-    "href": "posts/dicom/conformance/conformance.html",
-    "title": "Conformance",
-    "section": "",
-    "text": "Discovery 710/610 Optima 560"
-  },
-  {
-    "objectID": "posts/development/open_source/open_source.html",
-    "href": "posts/development/open_source/open_source.html",
-    "title": "Open Source",
-    "section": "",
-    "text": "Dose Report Retrieve\n\n병원 PACS로부터 추출하는 것은 시도하지 않았다.\n핵의학과 mini PACS로부터 선량정보를 가지고 있는 DICOM 파일들만 선택적으로 추출 가능한지 검토하였다.\nDiscovery 710에서 Dose Report는 SeriesDescription 태그에 “Dose Report”가 기록되어 있거나 SeriesNumber 태그에 “999”가 기록되어져 있으므로 이를 이용해서 query & retrieve 할 수 있다.\n저자의 병원 Zetta PACS에서는 SeriesDescription이나 SeriesNumber를 필터하여 DICOM send할 수 있는 기능이 없으므로 open source dicom server에서 query & retrieve 하는 방식으로 먼저 접근하였다.\nConquest에서는 SeriesDescription\n\nopen source를 이용해서 추출했을 때 결과는 아래와 같았다.",
-    "crumbs": [
-      "개발기록",
-      "opon source"
-    ]
-  },
-  {
-    "objectID": "posts/development/NMDose/NMDose.html",
-    "href": "posts/development/NMDose/NMDose.html",
-    "title": "NMDose",
-    "section": "",
-    "text": "Dose Report들을 가지고 있는 DICOM Server\n“C:”에 데이터가 있음",
-    "crumbs": [
-      "개발기록",
-      "NM Dose"
-    ]
-  },
-  {
-    "objectID": "posts/development/NMDose/NMDose.html#python에서-package의-개념",
-    "href": "posts/development/NMDose/NMDose.html#python에서-package의-개념",
-    "title": "NMDose",
-    "section": "### Python에서 package의 개념",
-    "text": "### Python에서 package의 개념\n\nDICOM 읽어오기\n\ndicom_files는 리스트이므로 []로 초기화\nos.walk는 (root, dirs, files) 형태의 튜플을 반환하며 Python의 for loop에서는 리스트나 튜플의 요소를 동시에 할당하는 “언패킹” 기능이 지원되므로 이를 사용\n튜플은 변형할 수 없는 리스트라 할 수 있으며, 리스트에 비해 속도가 빠르고 메모리 사용량이 적으며, 함수 반환 값, 여러 변수 할당(Unpacking), for 루프에서 다중 변수 할당 등에 자주 사용된다.\nendswith()는 str 클래스의 내장 메서드로써 string 문자에 dot 연산자로 붙이면 T/F를 반환함\nfile_path를 만들 때, dirs를 제외함에 주의할 것\npydicom.read는 DICOM을 다루기 위한 목적으로 만들어진 Dataset 클래쓰의 객체를 반환해주며, get method를 이용하면 속성명으로 안전하게 (= 값이 없는 경우에는 default를 지정하여) 조회하여 할 수 있다.\n스캐너 또는 제조사별로 DICOM 문자코딩이 달라 SpecificCharacterSet을 파악하고, 이를 위한 인코딩디코딩 함수를 만들었다. 하지만 인코딩디코딩 오류전략을 잘 못 구현하여 수정이 필요하다. 디버기을 위해서 original_study_description 등을 사용하고 있다.",
-    "crumbs": [
-      "개발기록",
-      "NM Dose"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Blog",
-    "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nNMDose\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nNMDose\n\n\n\nNMDose 개발과정기록\n\n\n\n\n\nFeb 19, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\n개발기록\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\n\n개발과정을 기록하여 나의 기억과 협업에 도움이 되고자 함\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nSpeficifCharactorSet decoding\n\n\n\n\n\n\nNMDose\n\n\nDICOM\n\n\nSpecificCharactorSet\n\n\ndecoding\n\n\n\nNMDose 개발 중 DICOM SpeficifCharactorSet decoding 오류 해결하기\n\n\n\n\n\nFeb 25, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOpen Source\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\n오픈소스들을 이용한 선량추출 시스템 구축과정을 기록\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOpen Source\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\n오픈소스들을 이용한 선량추출 시스템 구축과정을 기록\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nConformance\n\n\n\n\n\n\nDICOM\n\n\nConformance\n\n\n\nDICOM Conformance\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDICOM\n\n\n\n\n\n\nDICOM\n\n\n\nDICOM 공부한 것을 정리하였습니다.\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\n구조\n\n\n\n\n\n\nDICOM\n\n\nstructure\n\n\n\nDICOM 파일의 구조\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nProcedure\n\n\n\n\n\n\nstandardization\n\n\nprocedure\n\n\n\n표준 검사명칭\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nChocolatey\n\n\n\n\n\n\nWindown\n\n\nChocolatey\n\n\nsetup\n\n\n\n설치\n\n\n\n\n\nApr 15, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nConquest\n\n\n\n\n\n\ndicom server\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDCM4che\n\n\n\n\n\n\nDCM4che\n\n\n\nDCM4che toolkit\n\n\n\n\n\nMar 7, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDCMTK\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\nopen source 이용한 반자동화\n\n\n\n\n\nMar 4, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDicoogle\n\n\n\n\n\n\ndicom server\n\n\nDicoogle\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDocker\n\n\n\n\n\n\ndocker\n\n\n\nUbuntu에 Docker 설치 및 사용법\n\n\n\n\n\nMar 9, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOpenREM\n\n\n\n\n\n\ndeveolpment\n\n\ndicom\n\n\ndose extrator\n\n\nopen source\n\n\nOpenREM\n\n\n\nDICOM에서 선량정보 추출 open source\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOrthanc\n\n\n\n\n\n\ndicom server\n\n\nOrthanc\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDocker\n\n\n\n\n\n\ndocker\n\n\n\nUbuntu에 Docker 설치 및 사용법\n\n\n\n\n\nMar 9, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nSDKMAN\n\n\n\n\n\n\nJAVA\n\n\n\n개발도구 관리툴\n\n\n\n\n\nMar 7, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nSlicer\n\n\n\n\n\n\ndicom server\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nTools\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\nopen source 이용한 반자동화\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\n사이트사용법\n\n\n\n\n\n\n사용법\n\n\n\n이 웹사이트 고유의 사용법이 설명되어 있습니다.\n\n\n\n\n\nDec 20, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nKNMIP\n\n\n\n\n\n\nstandardization\n\n\nKNMIP\n\n\n\nKorea Nuclear Medicine Imaging Proceudure Version v1.0\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nStandardization\n\n\n\n\n\n\nDICOM\n\n\n\n핵릐학 검사명칭 표준화\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDCM4chee\n\n\n\n\n\n\nDCM4chee\n\n\n\nDCM4che로 구현한 open source PACS\n\n\n\n\n\nMar 7, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDoseUtility\n\n\n\n\n\n\ndeveolpment\n\n\ndicom\n\n\ndose extrator\n\n\nopen source\n\n\nDoseUtility\n\n\n\nDICOM에서 선량정보 추출 open source\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nPostgreSQL\n\n\n\n\n\n\ntools\n\n\nopen source\n\n\ndatabase\n\n\nPostgreSQL\n\n\n\ndatabase open source\n\n\n\n\n\nMar 5, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nWSL2/Ubuntu\n\n\n\n\n\n\nWSL2\n\n\nUbuntu\n\n\nsetup\n\n\n\nWSL2 및 Ubuntu 설치\n\n\n\n\n\nNov 16, 2024\n\n\nBenKorea\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "conquest/readme.html",
-    "href": "conquest/readme.html",
-    "title": "NMDose",
-    "section": "",
-    "text": "This is the new Conquest DICOM Server source code repository, it is the first ever release of the full source code of Conquest Dicom server with full source code, including the windows GUI.\nIts USP is simplicity for starters, speed for serious users, and endless configurability for nerds and anybody wanting to automate DICOM workflows.\n[Web page] http://www.natura-ingenium.nl/dicom.html\n[Forum] (https://forum.image-systems.biz/forum/index.php?board/33-conquest-users/)\n[Download current stable release 1.5.0e] (http://natura-ingenium.nl/dicomserver/dicomserver150e.zip)\nThe commit corresponding to 1.5.0e is here: https://github.com/marcelvanherk/Conquest-DICOM-Server/commit/f7c072e70c8f73482bd35a2fc8ffb23ec2ab39d8\nConquest DICOM Server is a group effort and I would like to thank Mark Oskin for the initial library; Lambert Zijp for years of development while at NKI, especially fixing bugs in the transport layers, and adding initial jpeg codecs; Lennert Ploeger for optimising the array implementation and the Delphi exe launcher; Bruce Barton for greatly extending compression and decompression, many many bug fixes and startup code; and Luiz Oliveira for enthousiastically helping developing WEBDicom, providing a sample webDICOM/Cornerstone based viewer, and endless bug finding.\nOpen source code used includes the Independent JPEG Group’s software; charls by Jan de Vaan; François PIETTE’s Delphi socket components, Lua5.1 by Roberto Ierusalimschy, Luasocket by Diego Nehab, OpenJpeg (for jepg2000) by Herve Drolon, FreeImage Team, and CS Systemes d’Information, France, SQlite by D Richard Hipp, Delphi UService from an unknown source, MiTeC DBF Table by Michal Mutl, Lunatic Python by Gustavo Niemeyer and PhP Router by Bramus Van Damme.\nIn addition, the following minimised sample web viewers are included: papaya (https://github.com/rii-mango/Papaya, build 1446) and ohif (https://github.com/OHIF/Viewers, 1.03).\nThe app/newweb code also contains unmaintained interfaces for dwv (https://github.com/ivmartel/dwv), and weasis (https://nroduit.github.io/en/)."
-  },
-  {
-    "objectID": "conquest/install/readme.html",
-    "href": "conquest/install/readme.html",
-    "title": "NMDose",
-    "section": "",
-    "text": "** Web based installer **\nThis folder contains batch files to build/start dgate (linux) or copy/start dgate.exe (windows) that act as a control manager to install/build conquest dicom server using a web interface. It main use is to install under Linux.\nMissing features: control SeLinux; create deamon."
-  },
-  {
-    "objectID": "devlog/keycloak.html",
-    "href": "devlog/keycloak.html",
-    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
-    "section": "",
-    "text": "목적:\n프로젝트에서 개인정보보호법 준수, 사용자 역할별 접근 제어,\n보안성 강화 및 운영 효율성 확보를 위해\nKeycloak 기반 인증 시스템을 도입함\n적용 범위:\n\nnmdose FastAPI 서버의 인증/인가(Authorization)\n슈퍼유저/일반 사용자/개발자 권한 분기\n추후 SSO(싱글사인온), OAuth2 연동까지 확장 가능\n\n\n\n\n\n\n\n왜 Keycloak?\n\n오픈소스이면서 기업/병원에서 널리 쓰임\nOAuth2, OIDC, SAML 등 표준 지원\n도커/Docker Compose 기반 빠른 배포\n사용자, 역할, 정책, 2차 인증 등 고급 기능 제공\n관리 UI(웹) 및 API 제공\n\n운영 전략\n\n개발 단계: Docker 기반 Keycloak 서버 (localhost/dev only)\n운영/병원 적용: 별도 서버, 네트워크/방화벽 분리, TLS 적용\n(가능한 경우 물리적 분리, 불가시 Docker Compose 기반 논리적 분리)\n\n\n\n\n\n\n\nKeycloak 서버 구축\n\nDocker Compose로 keycloak:24.0 이미지 사용\nDB: 내장 h2 또는 PostgreSQL 연동(운영시)\nrealm, client(nmdose-fastapi), user role 생성\n\nFastAPI 연동\n\n/run.py, /src/nmdose/webapp.py 등에서\nauth-mode 인자를 통해 keycloak 지원\n\n인증 미들웨어 및 Depends 구조 설계(더미 포함)\n\n인증·인가 실패시 403/401 에러 반환, 인증 정보 로깅\n\n환경변수/설정\n\n.env 및 config/keycloak.yaml에\nKeycloak 서버 주소, realm, client ID/secret 관리\n\n(Vault 등으로 client secret 보안 저장)\n\n사용자/역할 정책\n\n슈퍼유저/일반사용자/개발자 등 역할 분기\n권한별 접근제어: /api/start-findscu 등은 superuser/dev만 접근 가능\n(향후 그룹별, 정책별 세분화 가능)\n\n\n\n\n\n\n\n회고\n\n개발환경 Keycloak Docker로 빠르게 검증/적용\n환경별(role, 모드별) 인증 로직 분기 구조 설계 완료\nVault 및 환경변수 보안관리까지 적용하여\n개인정보/보안 법규 준수 기반 마련\n\n향후 개선점/TODO\n\n운영환경: Keycloak 서버 물리 분리 및 TLS 적용\nKeycloak Admin 자동화 스크립트 개발\nFastAPI Auth 미들웨어 개선(토큰 검증, 세션 연동)\n로그 아웃, 패스워드/2차 인증 강화 정책 도입\n외부 SSO/OAuth2 연동 시나리오 테스트\n\n\n\n\n\n\n\nKeycloak 공식문서: https://www.keycloak.org/documentation\nFastAPI OAuth2 예제: https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/\n프로젝트 관련 파일:\n\n/src/nmdose/webapp.py\n/src/nmdose/security/keycloak_config.py\n/config/keycloak.yaml\n/run.py\n.env"
-  },
-  {
-    "objectID": "devlog/keycloak.html#개요",
-    "href": "devlog/keycloak.html#개요",
-    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
-    "section": "",
-    "text": "목적:\n프로젝트에서 개인정보보호법 준수, 사용자 역할별 접근 제어,\n보안성 강화 및 운영 효율성 확보를 위해\nKeycloak 기반 인증 시스템을 도입함\n적용 범위:\n\nnmdose FastAPI 서버의 인증/인가(Authorization)\n슈퍼유저/일반 사용자/개발자 권한 분기\n추후 SSO(싱글사인온), OAuth2 연동까지 확장 가능"
-  },
-  {
-    "objectID": "devlog/keycloak.html#주요-의사결정",
-    "href": "devlog/keycloak.html#주요-의사결정",
-    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
-    "section": "",
-    "text": "왜 Keycloak?\n\n오픈소스이면서 기업/병원에서 널리 쓰임\nOAuth2, OIDC, SAML 등 표준 지원\n도커/Docker Compose 기반 빠른 배포\n사용자, 역할, 정책, 2차 인증 등 고급 기능 제공\n관리 UI(웹) 및 API 제공\n\n운영 전략\n\n개발 단계: Docker 기반 Keycloak 서버 (localhost/dev only)\n운영/병원 적용: 별도 서버, 네트워크/방화벽 분리, TLS 적용\n(가능한 경우 물리적 분리, 불가시 Docker Compose 기반 논리적 분리)"
-  },
-  {
-    "objectID": "devlog/keycloak.html#구현적용-내용",
-    "href": "devlog/keycloak.html#구현적용-내용",
-    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
-    "section": "",
-    "text": "Keycloak 서버 구축\n\nDocker Compose로 keycloak:24.0 이미지 사용\nDB: 내장 h2 또는 PostgreSQL 연동(운영시)\nrealm, client(nmdose-fastapi), user role 생성\n\nFastAPI 연동\n\n/run.py, /src/nmdose/webapp.py 등에서\nauth-mode 인자를 통해 keycloak 지원\n\n인증 미들웨어 및 Depends 구조 설계(더미 포함)\n\n인증·인가 실패시 403/401 에러 반환, 인증 정보 로깅\n\n환경변수/설정\n\n.env 및 config/keycloak.yaml에\nKeycloak 서버 주소, realm, client ID/secret 관리\n\n(Vault 등으로 client secret 보안 저장)\n\n사용자/역할 정책\n\n슈퍼유저/일반사용자/개발자 등 역할 분기\n권한별 접근제어: /api/start-findscu 등은 superuser/dev만 접근 가능\n(향후 그룹별, 정책별 세분화 가능)"
-  },
-  {
-    "objectID": "devlog/keycloak.html#회고-및-todo",
-    "href": "devlog/keycloak.html#회고-및-todo",
-    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
-    "section": "",
-    "text": "회고\n\n개발환경 Keycloak Docker로 빠르게 검증/적용\n환경별(role, 모드별) 인증 로직 분기 구조 설계 완료\nVault 및 환경변수 보안관리까지 적용하여\n개인정보/보안 법규 준수 기반 마련\n\n향후 개선점/TODO\n\n운영환경: Keycloak 서버 물리 분리 및 TLS 적용\nKeycloak Admin 자동화 스크립트 개발\nFastAPI Auth 미들웨어 개선(토큰 검증, 세션 연동)\n로그 아웃, 패스워드/2차 인증 강화 정책 도입\n외부 SSO/OAuth2 연동 시나리오 테스트"
-  },
-  {
-    "objectID": "devlog/keycloak.html#참고연결-자료",
-    "href": "devlog/keycloak.html#참고연결-자료",
-    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
-    "section": "",
-    "text": "Keycloak 공식문서: https://www.keycloak.org/documentation\nFastAPI OAuth2 예제: https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/\n프로젝트 관련 파일:\n\n/src/nmdose/webapp.py\n/src/nmdose/security/keycloak_config.py\n/config/keycloak.yaml\n/run.py\n.env"
-  },
-  {
-    "objectID": "posts/development/development.html",
-    "href": "posts/development/development.html",
-    "title": "개발기록",
-    "section": "",
-    "text": "핵의학 영상의 최적화는 품질과 선량을 동시에 고려해야 한다. 그러나 현재는 최적화를 검토하기 위한 기초자료의 생성과정이 수작업에 많이 의존해야 하며, 영상품질은 consensus를 이룬 지표조차 없는 상태이다. 따라서 최적화를 검토하기 위한 기초자료 생성용 프로그램 개발이 필요하다. 이 프로그램은 우선을 선량정보를 추출하는 기능을 구현하고자 한다. 가능할지 모르겠지만 향후에는 영상품질지표까지 추출하는 기능까지 구현하고자 한다.\n개발은 크게 - open source 이용한 반자동화 - 가칭 NMDose 프로그램 개발 - 방사성의약품투여량과 CT dose index를 추출하여 선량-영상관리의 도구로 활용 - 장차 DLR 조사의 도구로 활용하는 것을 목표로 한다. - 가칭 NMIQ 프로그램의 개발 - 장차 영상품질지표를 수집하여 데이터베이스로 구축하여 선량과 연계분석하고 - 장차 영상으로부터 자동으로 영상품질지표를 추출하는 것을 목표로 한다.\n본격적인 개발에 앞서 PACS 시스템을 모사하는 것이 필요하여 다음과 같이 모사하고자 한다.\n\nDICOM 서버\n병원 PACS로부터 선량정보를 추출할 때를 모사하고자 하면, 병원 PACS에 대한 모사 시스템과",
-    "crumbs": [
-      "개발기록"
-    ]
-  },
-  {
-    "objectID": "posts/development/NMDose/SpecificCharactorSet_decoding.html",
-    "href": "posts/development/NMDose/SpecificCharactorSet_decoding.html",
-    "title": "SpeficifCharactorSet decoding",
-    "section": "",
-    "text": "DICOM에서 사용되는 문자열은 인코딩(Encoding) 시 1~3바이트(또는 그 이상)의 이진 데이터로 저장되며, 이때 인코딩 방식은 SpecificCharacterSet(0008,0005) 태그에 기록된다. 따라서, SpecificCharacterSet의 값에 맞추어 디코딩(Decoding)하면 문자열이 깨지지 않고 올바르게 변환될 수 있다.\n한글이 포함된 문자열은 DICOM에서 최소 두 가지 방식으로 저장될 수 있다. - ISO_IR 149(EUC-KR)는 과거 한글 DICOM 시스템에서 사용되었으며, 완성형 한글만 지원하므로 일부 한글 표현이 제한될 수 있다. - ISO_IR 192(UTF-8)은 유니코드 기반의 인코딩 방식으로 다국어 지원이 가능하며, 최신 DICOM 시스템에서 가장 권장되는 방식이다.\npydicom.dcmread()를 사용하면 DICOM 파일 내의 문자열 데이터는 SpecificCharacterSet(0008,0005)에 따라 자동으로 디코딩되어 Python의 str 객체로 반환됩니다.\n만약에 실제 encoding과 specificcharacterset 지정이 다르면 pydicom 결과는 깨진 문자열이 보이게 되는데, 이 때, 지정대로 다시 encoding해주고 dicom 저장 시 되었던 encoding으로 decoding 한다면 오류를 해결 할 수 있다.\na1_dicom_reader에 정의된 함수에서는 조건과 인코딩과 디코딩이 모두 같은 방식으로 잘 못 만들어진 부분이 있다. 수정이 필요함 2025-02-26\n스캐너 종류에 따라 검사명이 깨어져 있으며 이는 deccoding fix가 되지 않는다.",
-    "crumbs": [
-      "개발기록",
-      "NM Dose",
-      "SpeficifCharactorSet decoding"
-    ]
-  },
-  {
-    "objectID": "posts/development/open_source/others.html",
-    "href": "posts/development/open_source/others.html",
-    "title": "Open Source",
-    "section": "",
-    "text": "open source 이용한 반자동화",
-    "crumbs": [
-      "개발기록",
-      "opon source",
-      "Open Source"
-    ]
-  },
-  {
-    "objectID": "posts/dicom/dicom.html",
-    "href": "posts/dicom/dicom.html",
-    "title": "DICOM",
-    "section": "",
-    "text": "IP와 포트를 확인\n\n\n\n\n\nDICOM 통신을 확인하기 위해서는 DICOM 통신이 가능한 프로그램을 사용해야 함",
-    "crumbs": [
-      "DICOM"
-    ]
-  },
-  {
-    "objectID": "posts/dicom/dicom.html#dicom-통신-검증",
-    "href": "posts/dicom/dicom.html#dicom-통신-검증",
-    "title": "DICOM",
-    "section": "",
-    "text": "IP와 포트를 확인\n\n\n\n\n\nDICOM 통신을 확인하기 위해서는 DICOM 통신이 가능한 프로그램을 사용해야 함",
-    "crumbs": [
-      "DICOM"
-    ]
-  },
-  {
-    "objectID": "posts/manual.html",
-    "href": "posts/manual.html",
-    "title": "사이트사용법",
-    "section": "",
-    "text": "날짜의 의미\n\n각 웹페이지는 두 가지 날짜가 있으며 이 웹사이트에서는 구별되어 사용되고 있습니다.\n\nPUBLISHED는 최초작성일에 해당하는 개념입니다.\n\n블로그에서 Date-Oldest, Date-Newest 정렬(Order By)할 때 기준으로 사용됩니다.\n\nMODIFIED는 최종수정일에 해당하는 개념입니다.\n\n블로그에서 Default로 정렬할 때 기준으로 사용됩니다.\nDefault로 정렬할 때 내부적으로 MODIFIED 날짜의 최신순으로 되지만, 정렬된 페이지목록에서 각 페이지의 왼쪽의 보여지는 날짜는 MODIFIED가 아닌 PUBLISHED를 보여줍니다. 이로인해 Defalut 정렬에서 각 페이지의 날짜와 정렬이 맞지 않는 것처럼 착각될 수 있으므로 주의를 요합니다.\n\n\n\n\n\n댓글\n\n댓글 기능은 guthub에 가입해야 가능합니다.\n아직 개발중인 기능이라 웹페이지가 갱신될 때 기존 댓글이 사라질 수 있으니 알파/베타 테스터 분들의 양해를 바랍니다."
   },
   {
     "objectID": "posts/tools/chocolatey.html",
@@ -492,6 +219,306 @@
     "crumbs": [
       "Tools",
       "Chocolatey"
+    ]
+  },
+  {
+    "objectID": "posts/tools/SDKMAN.html",
+    "href": "posts/tools/SDKMAN.html",
+    "title": "SDKMAN",
+    "section": "",
+    "text": "JAVA 버전관리 용 Git bash에 설치\ncurl -s \"https://get.sdkman.io\" | bash\n경로설정\nC:\\Users\\Administrator\\.sdkman\\bin"
+  },
+  {
+    "objectID": "posts/tools/Orthanc.html",
+    "href": "posts/tools/Orthanc.html",
+    "title": "Orthanc",
+    "section": "",
+    "text": "https://orthanc.uclouvain.be/downloads/windows-64/index.html\n\n\n\n\n{\n  \"Name\" : \"NMResearchPACS\",\n  \"StorageDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"IndexDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"HttpServerEnabled\" : true,\n  \"HttpPort\" : 8042,  \n  \"DicomAet\" : \"ORTHANC\",\n  \"DicomModalities\" : {\n    \"NMPACS\" : [ \"NMPACS\", \"172.17.111.214\", 104 ],\n    \"NMDOSE\" : [ \"NMDOSE\", \"127.0.0.1\", 5678 ],\n    \"SLICER\" : [ \"SLICER\", \"172.17.130.79\", 11112 ]\n  },\n재설치를 대비하여 구글 드라이브에 백업해둠\n\n\n\n{\n    /**\n     * Configuration to use PostgreSQL instead of the default SQLite\n     * back-end of Orthanc. You will have to install the\n     * \"orthanc-postgresql\" package to take advantage of this feature.\n     **/\n    \"PostgreSQL\" : {\n        // Enable the use of PostgreSQL to store the Orthanc index?\n        \"EnableIndex\" : true,\n\n        // Enable the use of PostgreSQL to store the DICOM files?\n        \"EnableStorage\" : false,\n\n        // Option 1: Specify explicit authentication parameters\n        \"Host\" : \"localhost\",\n        \"Port\" : 5432,\n        \"Database\" : \"nmresearchpacs\",\n        \"Username\" : \"nmresearchuser\",\n        \"Password\" : \"nmresearch\",\n\n        // Option 2: Authenticate using PostgreSQL connection URI\n        // \"ConnectionUri\" : \"postgresql://orthanc_user:my_password@localhost:5432/orthanc_db\",\n\n        // Optional: Disable the locking of the PostgreSQL database\n        \"Lock\" : false\n    }\n}\n\n\n\n인바운드 4343 허용",
+    "crumbs": [
+      "Tools",
+      "Orthanc"
+    ]
+  },
+  {
+    "objectID": "posts/tools/Orthanc.html#windows에서의-설치",
+    "href": "posts/tools/Orthanc.html#windows에서의-설치",
+    "title": "Orthanc",
+    "section": "",
+    "text": "https://orthanc.uclouvain.be/downloads/windows-64/index.html\n\n\n\n\n{\n  \"Name\" : \"NMResearchPACS\",\n  \"StorageDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"IndexDirectory\" : \"C:\\\\Orthanc\\\\data\",\n  \"HttpServerEnabled\" : true,\n  \"HttpPort\" : 8042,  \n  \"DicomAet\" : \"ORTHANC\",\n  \"DicomModalities\" : {\n    \"NMPACS\" : [ \"NMPACS\", \"172.17.111.214\", 104 ],\n    \"NMDOSE\" : [ \"NMDOSE\", \"127.0.0.1\", 5678 ],\n    \"SLICER\" : [ \"SLICER\", \"172.17.130.79\", 11112 ]\n  },\n재설치를 대비하여 구글 드라이브에 백업해둠\n\n\n\n{\n    /**\n     * Configuration to use PostgreSQL instead of the default SQLite\n     * back-end of Orthanc. You will have to install the\n     * \"orthanc-postgresql\" package to take advantage of this feature.\n     **/\n    \"PostgreSQL\" : {\n        // Enable the use of PostgreSQL to store the Orthanc index?\n        \"EnableIndex\" : true,\n\n        // Enable the use of PostgreSQL to store the DICOM files?\n        \"EnableStorage\" : false,\n\n        // Option 1: Specify explicit authentication parameters\n        \"Host\" : \"localhost\",\n        \"Port\" : 5432,\n        \"Database\" : \"nmresearchpacs\",\n        \"Username\" : \"nmresearchuser\",\n        \"Password\" : \"nmresearch\",\n\n        // Option 2: Authenticate using PostgreSQL connection URI\n        // \"ConnectionUri\" : \"postgresql://orthanc_user:my_password@localhost:5432/orthanc_db\",\n\n        // Optional: Disable the locking of the PostgreSQL database\n        \"Lock\" : false\n    }\n}\n\n\n\n인바운드 4343 허용",
+    "crumbs": [
+      "Tools",
+      "Orthanc"
+    ]
+  },
+  {
+    "objectID": "posts/tools/Orthanc.html#wsl2ubuntu-환경에서의-설치",
+    "href": "posts/tools/Orthanc.html#wsl2ubuntu-환경에서의-설치",
+    "title": "Orthanc",
+    "section": "WSL2/Ubuntu 환경에서의 설치",
+    "text": "WSL2/Ubuntu 환경에서의 설치\n\n패키지 목록 업데이트\n\n\n\nbash\n\nsudo apt update\n\n\n\n\nOrthanc 설치\n\n\n\nbash\n\nsudo apt install orthanc\n\n\n\n\northanc.json 설정\n\n\n\northanc.json\n\nsudo nano /etc/orthanc/orthanc.json\n\n\n“Name” : “Orthanc_wsl2”,\n“HttpPort” : 8043,\n“DicomAet” : “ORTHANC_WSL2”\n“DicomPort” : 4243,\n“RemoteAccessAllowed” : false,\n“DicomModalities” : {\n    \"Orthanc-win\" : [ \"ORTHANC\", \"172.21.112.1\", 4242 ],\n    \"NMTEMPSERVER\" : [ \"NMTEMPSERVER\", \"172.21.112.1\", 5681 ],\n    \"NMPACS\" : [ \"NMPACS\", \"172.17.111.214\", 104 ]\n\n\nOrthanc 재시작\n\n\n\nbash\n\nsudo systemctl restart orthanc\n\n\n\n\nOrthanc Explorer2 plugin 설치\n\n설치명령이 잘 작동하지 않아서 웹페이지에서 so 파일을 직접 다운로드 하였다.\n\n\n\n\nbrowse\n\nhttps://github.com/orthanc-server/orthanc-explorer-2/releases\n\n\n\nlibOrthancExplorer2-ubuntu.so 파일을 다운로드하여 /usr/share/orthanc/plugins 폴더에 저장하였다.\northanc.json에서 아래와 같이 설정하였다.\n\n\n\n\northanc.json\n\n\"Plugins\" : {\n  \"OrthancExplorer2\" : {\n    \"Enabled\" : true,\n    \"Path\" : \"/usr/share/orthanc/plugins/libOrthancExplorer2-ubuntu.so\"\n  }\n}\n\n\n\nOrthanc을 재시작하였다.\n\n\n\n\nbash\n\nsudo systemctl restart orthanc\n\n\n\n\n\nbash\n\nsudo apt install orthanc-explorer2\n\n\n\n\nOrthanc systemd 서비스 비활성화\n\n\n\nbash\n\nsudo systemctl disable orthanc\n\n\n\n\nOrthanc 수동 시작\n\n\n\nbash\n\nsudo systemctl start orthanc\n\n\n\n\n윈도우 포트포워딩 점검\n\n\n\npowershell\n\nnetsh interface portproxy show v4tov4\n\n\n\n\n윈도우 포트포워딩 리셋\n\n\n\npowershell\n\nnetsh interface portproxy reset\n\n\n\n\nWSL2_IP 알아내기\n\n\n\nbash\n\nsudo ip addr show eth0 | grep inet\n\n\n172.21.120.237\n\n\n포워딩\n\n\n\npowershell\n\nnetsh interface portproxy add v4tov4 `\n  listenaddress=0.0.0.0 listenport=4242 `\n  connectaddress=172.21.120.237 connectport=4243 `\n  protocol=tcp\n\n\n\n\n방화벽\n\n\n점검\n\n\n\npowershell\n\nnc -vz &lt;NMPACS_IP&gt; 104",
+    "crumbs": [
+      "Tools",
+      "Orthanc"
+    ]
+  },
+  {
+    "objectID": "posts/tools/Orthanc.html#orthanc-docker",
+    "href": "posts/tools/Orthanc.html#orthanc-docker",
+    "title": "Orthanc",
+    "section": "orthanc-docker",
+    "text": "orthanc-docker\n\northanc-docker 폴더이름으로 orthanc 이미지로만 docker-compose를 실행하였다.\ndocker-compose.yml 파일에 docker network를 지정하지 않았기 때문에 orthanc-docker container와 함께 orthanc-docker_default 이름의 network가 만들어졌다.\nDCM4CHEE은 compose로 했을 때의 값을 일단 그대로 해 보았다.\n\n            \"dcm4chee\" : [ \"DCM4CHEE\", \"arc\", 11112 ]\n\n그러나 같은 네트워크에 속해있지 않기 때문에 orthanc-docker에서 DCM4CHEE에 접근할 수 없을 것이다.",
+    "crumbs": [
+      "Tools",
+      "Orthanc"
+    ]
+  },
+  {
+    "objectID": "posts/standardization/standardization.html",
+    "href": "posts/standardization/standardization.html",
+    "title": "Standardization",
+    "section": "",
+    "text": "다기관 선량정보수집에 필요한 검사명칭 표준화 현황과 제안",
+    "crumbs": [
+      "표준화",
+      "Standardization"
+    ]
+  },
+  {
+    "objectID": "posts/dicom/information/structure.html",
+    "href": "posts/dicom/information/structure.html",
+    "title": "구조",
+    "section": "",
+    "text": "DICOM Structure",
+    "crumbs": [
+      "DICOM",
+      "Information"
+    ]
+  },
+  {
+    "objectID": "posts/dicom/conformance/conformance.html",
+    "href": "posts/dicom/conformance/conformance.html",
+    "title": "Conformance",
+    "section": "",
+    "text": "Discovery 710/610 Optima 560"
+  },
+  {
+    "objectID": "posts/development/open_source/open_source.html",
+    "href": "posts/development/open_source/open_source.html",
+    "title": "Open Source",
+    "section": "",
+    "text": "Dose Report Retrieve\n\n병원 PACS로부터 추출하는 것은 시도하지 않았다.\n핵의학과 mini PACS로부터 선량정보를 가지고 있는 DICOM 파일들만 선택적으로 추출 가능한지 검토하였다.\nDiscovery 710에서 Dose Report는 SeriesDescription 태그에 “Dose Report”가 기록되어 있거나 SeriesNumber 태그에 “999”가 기록되어져 있으므로 이를 이용해서 query & retrieve 할 수 있다.\n저자의 병원 Zetta PACS에서는 SeriesDescription이나 SeriesNumber를 필터하여 DICOM send할 수 있는 기능이 없으므로 open source dicom server에서 query & retrieve 하는 방식으로 먼저 접근하였다.\nConquest에서는 SeriesDescription\n\nopen source를 이용해서 추출했을 때 결과는 아래와 같았다.",
+    "crumbs": [
+      "개발기록",
+      "opon source"
+    ]
+  },
+  {
+    "objectID": "posts/development/NMDose/SpecificCharactorSet_decoding.html",
+    "href": "posts/development/NMDose/SpecificCharactorSet_decoding.html",
+    "title": "SpeficifCharactorSet decoding",
+    "section": "",
+    "text": "DICOM에서 사용되는 문자열은 인코딩(Encoding) 시 1~3바이트(또는 그 이상)의 이진 데이터로 저장되며, 이때 인코딩 방식은 SpecificCharacterSet(0008,0005) 태그에 기록된다. 따라서, SpecificCharacterSet의 값에 맞추어 디코딩(Decoding)하면 문자열이 깨지지 않고 올바르게 변환될 수 있다.\n한글이 포함된 문자열은 DICOM에서 최소 두 가지 방식으로 저장될 수 있다. - ISO_IR 149(EUC-KR)는 과거 한글 DICOM 시스템에서 사용되었으며, 완성형 한글만 지원하므로 일부 한글 표현이 제한될 수 있다. - ISO_IR 192(UTF-8)은 유니코드 기반의 인코딩 방식으로 다국어 지원이 가능하며, 최신 DICOM 시스템에서 가장 권장되는 방식이다.\npydicom.dcmread()를 사용하면 DICOM 파일 내의 문자열 데이터는 SpecificCharacterSet(0008,0005)에 따라 자동으로 디코딩되어 Python의 str 객체로 반환됩니다.\n만약에 실제 encoding과 specificcharacterset 지정이 다르면 pydicom 결과는 깨진 문자열이 보이게 되는데, 이 때, 지정대로 다시 encoding해주고 dicom 저장 시 되었던 encoding으로 decoding 한다면 오류를 해결 할 수 있다.\na1_dicom_reader에 정의된 함수에서는 조건과 인코딩과 디코딩이 모두 같은 방식으로 잘 못 만들어진 부분이 있다. 수정이 필요함 2025-02-26\n스캐너 종류에 따라 검사명이 깨어져 있으며 이는 deccoding fix가 되지 않는다.",
+    "crumbs": [
+      "개발기록",
+      "NM Dose",
+      "SpeficifCharactorSet decoding"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\n인증시스템\n\n\n\n\n\n\nauthentication\n\n\nkey-cloak\n\n\n\nKeycloak\n\n\n\n\n\nJun 22, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\n개발기록\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\n\n개발과정을 기록하여 나의 기억과 협업에 도움이 되고자 함\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nNMDose\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nNMDose\n\n\n\nNMDose 개발과정기록\n\n\n\n\n\nFeb 19, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nSpeficifCharactorSet decoding\n\n\n\n\n\n\nNMDose\n\n\nDICOM\n\n\nSpecificCharactorSet\n\n\ndecoding\n\n\n\nNMDose 개발 중 DICOM SpeficifCharactorSet decoding 오류 해결하기\n\n\n\n\n\nFeb 25, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOpen Source\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\n오픈소스들을 이용한 선량추출 시스템 구축과정을 기록\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOpen Source\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\n오픈소스들을 이용한 선량추출 시스템 구축과정을 기록\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nConformance\n\n\n\n\n\n\nDICOM\n\n\nConformance\n\n\n\nDICOM Conformance\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDICOM\n\n\n\n\n\n\nDICOM\n\n\n\nDICOM 공부한 것을 정리하였습니다.\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\n구조\n\n\n\n\n\n\nDICOM\n\n\nstructure\n\n\n\nDICOM 파일의 구조\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nSDKMAN\n\n\n\n\n\n\nJAVA\n\n\n\n개발도구 관리툴\n\n\n\n\n\nMar 7, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nChocolatey\n\n\n\n\n\n\nWindown\n\n\nChocolatey\n\n\nsetup\n\n\n\n설치\n\n\n\n\n\nApr 15, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDCM4chee\n\n\n\n\n\n\nDCM4chee\n\n\n\nDCM4che로 구현한 open source PACS\n\n\n\n\n\nMar 7, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDicoogle\n\n\n\n\n\n\ndicom server\n\n\nDicoogle\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDocker\n\n\n\n\n\n\ndocker\n\n\n\nUbuntu에 Docker 설치 및 사용법\n\n\n\n\n\nMar 9, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nWSL2/Ubuntu\n\n\n\n\n\n\nWSL2\n\n\nUbuntu\n\n\nsetup\n\n\n\nWSL2 및 Ubuntu 설치\n\n\n\n\n\nNov 16, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\n사이트사용법\n\n\n\n\n\n\n사용법\n\n\n\n이 웹사이트 고유의 사용법이 설명되어 있습니다.\n\n\n\n\n\nDec 20, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nKNMIP\n\n\n\n\n\n\nstandardization\n\n\nKNMIP\n\n\n\nKorea Nuclear Medicine Imaging Proceudure Version v1.0\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nProcedure\n\n\n\n\n\n\nstandardization\n\n\nprocedure\n\n\n\n표준 검사명칭\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nStandardization\n\n\n\n\n\n\nDICOM\n\n\n\n핵릐학 검사명칭 표준화\n\n\n\n\n\nMar 1, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nConquest\n\n\n\n\n\n\ndicom server\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDoseUtility\n\n\n\n\n\n\ndeveolpment\n\n\ndicom\n\n\ndose extrator\n\n\nopen source\n\n\nDoseUtility\n\n\n\nDICOM에서 선량정보 추출 open source\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOpenREM\n\n\n\n\n\n\ndeveolpment\n\n\ndicom\n\n\ndose extrator\n\n\nopen source\n\n\nOpenREM\n\n\n\nDICOM에서 선량정보 추출 open source\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nOrthanc\n\n\n\n\n\n\ndicom server\n\n\nOrthanc\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nPostgreSQL\n\n\n\n\n\n\ntools\n\n\nopen source\n\n\ndatabase\n\n\nPostgreSQL\n\n\n\ndatabase open source\n\n\n\n\n\nMar 5, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nSlicer\n\n\n\n\n\n\ndicom server\n\n\n\ndicom server open source\n\n\n\n\n\nFeb 26, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDCM4che\n\n\n\n\n\n\nDCM4che\n\n\n\nDCM4che toolkit\n\n\n\n\n\nMar 7, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDCMTK\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\nopen source 이용한 반자동화\n\n\n\n\n\nMar 4, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nDocker\n\n\n\n\n\n\ndocker\n\n\n\nUbuntu에 Docker 설치 및 사용법\n\n\n\n\n\nMar 9, 2025\n\n\nBenKorea\n\n\n\n\n\n\n\n\n\n\n\n\nTools\n\n\n\n\n\n\ndeveolpment\n\n\nnote\n\n\nopen source\n\n\n\nopen source 이용한 반자동화\n\n\n\n\n\nFeb 19, 2024\n\n\nBenKorea\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "devlog/keycloak.html",
+    "href": "devlog/keycloak.html",
+    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
+    "section": "",
+    "text": "목적:\n프로젝트에서 개인정보보호법 준수, 사용자 역할별 접근 제어,\n보안성 강화 및 운영 효율성 확보를 위해\nKeycloak 기반 인증 시스템을 도입함\n적용 범위:\n\nnmdose FastAPI 서버의 인증/인가(Authorization)\n슈퍼유저/일반 사용자/개발자 권한 분기\n추후 SSO(싱글사인온), OAuth2 연동까지 확장 가능\n\n\n\n\n\n\n\n왜 Keycloak?\n\n오픈소스이면서 기업/병원에서 널리 쓰임\nOAuth2, OIDC, SAML 등 표준 지원\n도커/Docker Compose 기반 빠른 배포\n사용자, 역할, 정책, 2차 인증 등 고급 기능 제공\n관리 UI(웹) 및 API 제공\n\n운영 전략\n\n개발 단계: Docker 기반 Keycloak 서버 (localhost/dev only)\n운영/병원 적용: 별도 서버, 네트워크/방화벽 분리, TLS 적용\n(가능한 경우 물리적 분리, 불가시 Docker Compose 기반 논리적 분리)\n\n\n\n\n\n\n\nKeycloak 서버 구축\n\nDocker Compose로 keycloak:24.0 이미지 사용\nDB: 내장 h2 또는 PostgreSQL 연동(운영시)\nrealm, client(nmdose-fastapi), user role 생성\n\nFastAPI 연동\n\n/run.py, /src/nmdose/webapp.py 등에서\nauth-mode 인자를 통해 keycloak 지원\n\n인증 미들웨어 및 Depends 구조 설계(더미 포함)\n\n인증·인가 실패시 403/401 에러 반환, 인증 정보 로깅\n\n환경변수/설정\n\n.env 및 config/keycloak.yaml에\nKeycloak 서버 주소, realm, client ID/secret 관리\n\n(Vault 등으로 client secret 보안 저장)\n\n사용자/역할 정책\n\n슈퍼유저/일반사용자/개발자 등 역할 분기\n권한별 접근제어: /api/start-findscu 등은 superuser/dev만 접근 가능\n(향후 그룹별, 정책별 세분화 가능)\n\n\n\n\n\n\n\n회고\n\n개발환경 Keycloak Docker로 빠르게 검증/적용\n환경별(role, 모드별) 인증 로직 분기 구조 설계 완료\nVault 및 환경변수 보안관리까지 적용하여\n개인정보/보안 법규 준수 기반 마련\n\n향후 개선점/TODO\n\n운영환경: Keycloak 서버 물리 분리 및 TLS 적용\nKeycloak Admin 자동화 스크립트 개발\nFastAPI Auth 미들웨어 개선(토큰 검증, 세션 연동)\n로그 아웃, 패스워드/2차 인증 강화 정책 도입\n외부 SSO/OAuth2 연동 시나리오 테스트\n\n\n\n\n\n\n\nKeycloak 공식문서: https://www.keycloak.org/documentation\nFastAPI OAuth2 예제: https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/\n프로젝트 관련 파일:\n\n/src/nmdose/webapp.py\n/src/nmdose/security/keycloak_config.py\n/config/keycloak.yaml\n/run.py\n.env"
+  },
+  {
+    "objectID": "devlog/keycloak.html#개요",
+    "href": "devlog/keycloak.html#개요",
+    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
+    "section": "",
+    "text": "목적:\n프로젝트에서 개인정보보호법 준수, 사용자 역할별 접근 제어,\n보안성 강화 및 운영 효율성 확보를 위해\nKeycloak 기반 인증 시스템을 도입함\n적용 범위:\n\nnmdose FastAPI 서버의 인증/인가(Authorization)\n슈퍼유저/일반 사용자/개발자 권한 분기\n추후 SSO(싱글사인온), OAuth2 연동까지 확장 가능"
+  },
+  {
+    "objectID": "devlog/keycloak.html#주요-의사결정",
+    "href": "devlog/keycloak.html#주요-의사결정",
+    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
+    "section": "",
+    "text": "왜 Keycloak?\n\n오픈소스이면서 기업/병원에서 널리 쓰임\nOAuth2, OIDC, SAML 등 표준 지원\n도커/Docker Compose 기반 빠른 배포\n사용자, 역할, 정책, 2차 인증 등 고급 기능 제공\n관리 UI(웹) 및 API 제공\n\n운영 전략\n\n개발 단계: Docker 기반 Keycloak 서버 (localhost/dev only)\n운영/병원 적용: 별도 서버, 네트워크/방화벽 분리, TLS 적용\n(가능한 경우 물리적 분리, 불가시 Docker Compose 기반 논리적 분리)"
+  },
+  {
+    "objectID": "devlog/keycloak.html#구현적용-내용",
+    "href": "devlog/keycloak.html#구현적용-내용",
+    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
+    "section": "",
+    "text": "Keycloak 서버 구축\n\nDocker Compose로 keycloak:24.0 이미지 사용\nDB: 내장 h2 또는 PostgreSQL 연동(운영시)\nrealm, client(nmdose-fastapi), user role 생성\n\nFastAPI 연동\n\n/run.py, /src/nmdose/webapp.py 등에서\nauth-mode 인자를 통해 keycloak 지원\n\n인증 미들웨어 및 Depends 구조 설계(더미 포함)\n\n인증·인가 실패시 403/401 에러 반환, 인증 정보 로깅\n\n환경변수/설정\n\n.env 및 config/keycloak.yaml에\nKeycloak 서버 주소, realm, client ID/secret 관리\n\n(Vault 등으로 client secret 보안 저장)\n\n사용자/역할 정책\n\n슈퍼유저/일반사용자/개발자 등 역할 분기\n권한별 접근제어: /api/start-findscu 등은 superuser/dev만 접근 가능\n(향후 그룹별, 정책별 세분화 가능)"
+  },
+  {
+    "objectID": "devlog/keycloak.html#회고-및-todo",
+    "href": "devlog/keycloak.html#회고-및-todo",
+    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
+    "section": "",
+    "text": "회고\n\n개발환경 Keycloak Docker로 빠르게 검증/적용\n환경별(role, 모드별) 인증 로직 분기 구조 설계 완료\nVault 및 환경변수 보안관리까지 적용하여\n개인정보/보안 법규 준수 기반 마련\n\n향후 개선점/TODO\n\n운영환경: Keycloak 서버 물리 분리 및 TLS 적용\nKeycloak Admin 자동화 스크립트 개발\nFastAPI Auth 미들웨어 개선(토큰 검증, 세션 연동)\n로그 아웃, 패스워드/2차 인증 강화 정책 도입\n외부 SSO/OAuth2 연동 시나리오 테스트"
+  },
+  {
+    "objectID": "devlog/keycloak.html#참고연결-자료",
+    "href": "devlog/keycloak.html#참고연결-자료",
+    "title": "Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지",
+    "section": "",
+    "text": "Keycloak 공식문서: https://www.keycloak.org/documentation\nFastAPI OAuth2 예제: https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/\n프로젝트 관련 파일:\n\n/src/nmdose/webapp.py\n/src/nmdose/security/keycloak_config.py\n/config/keycloak.yaml\n/run.py\n.env"
+  },
+  {
+    "objectID": "posts/development/NMDose/NMDose.html",
+    "href": "posts/development/NMDose/NMDose.html",
+    "title": "NMDose",
+    "section": "",
+    "text": "Dose Report들을 가지고 있는 DICOM Server\n“C:”에 데이터가 있음",
+    "crumbs": [
+      "개발기록",
+      "NM Dose"
+    ]
+  },
+  {
+    "objectID": "posts/development/NMDose/NMDose.html#python에서-package의-개념",
+    "href": "posts/development/NMDose/NMDose.html#python에서-package의-개념",
+    "title": "NMDose",
+    "section": "### Python에서 package의 개념",
+    "text": "### Python에서 package의 개념\n\nDICOM 읽어오기\n\ndicom_files는 리스트이므로 []로 초기화\nos.walk는 (root, dirs, files) 형태의 튜플을 반환하며 Python의 for loop에서는 리스트나 튜플의 요소를 동시에 할당하는 “언패킹” 기능이 지원되므로 이를 사용\n튜플은 변형할 수 없는 리스트라 할 수 있으며, 리스트에 비해 속도가 빠르고 메모리 사용량이 적으며, 함수 반환 값, 여러 변수 할당(Unpacking), for 루프에서 다중 변수 할당 등에 자주 사용된다.\nendswith()는 str 클래스의 내장 메서드로써 string 문자에 dot 연산자로 붙이면 T/F를 반환함\nfile_path를 만들 때, dirs를 제외함에 주의할 것\npydicom.read는 DICOM을 다루기 위한 목적으로 만들어진 Dataset 클래쓰의 객체를 반환해주며, get method를 이용하면 속성명으로 안전하게 (= 값이 없는 경우에는 default를 지정하여) 조회하여 할 수 있다.\n스캐너 또는 제조사별로 DICOM 문자코딩이 달라 SpecificCharacterSet을 파악하고, 이를 위한 인코딩디코딩 함수를 만들었다. 하지만 인코딩디코딩 오류전략을 잘 못 구현하여 수정이 필요하다. 디버기을 위해서 original_study_description 등을 사용하고 있다.",
+    "crumbs": [
+      "개발기록",
+      "NM Dose"
+    ]
+  },
+  {
+    "objectID": "posts/development/development.html",
+    "href": "posts/development/development.html",
+    "title": "개발기록",
+    "section": "",
+    "text": "핵의학 영상의 최적화는 품질과 선량을 동시에 고려해야 한다. 그러나 현재는 최적화를 검토하기 위한 기초자료의 생성과정이 수작업에 많이 의존해야 하며, 영상품질은 consensus를 이룬 지표조차 없는 상태이다. 따라서 최적화를 검토하기 위한 기초자료 생성용 프로그램 개발이 필요하다. 이 프로그램은 우선을 선량정보를 추출하는 기능을 구현하고자 한다. 가능할지 모르겠지만 향후에는 영상품질지표까지 추출하는 기능까지 구현하고자 한다.\n개발은 크게 - 개인정보보호법에 적합한 감사기록/사용자인증/가명화시스템을 오픈소스로 구축 - 가칭 NMDose 프로그램 개발 - 방사성의약품투여량과 CT dose index를 추출하여 선량-영상품질관리의 도구로 활용 - 장차 DLR 조사의 도구로 활용하는 것을 목표로 한다. - 가칭 NMIQ 프로그램의 개발 - 장차 영상품질지표를 수집하여 데이터베이스로 구축하여 선량과 연계분석하고 - 장차 영상으로부터 자동으로 영상품질지표를 추출하는 것을 목표로 한다.",
+    "crumbs": [
+      "개발기록"
+    ]
+  },
+  {
+    "objectID": "posts/development/open_source/others.html",
+    "href": "posts/development/open_source/others.html",
+    "title": "Open Source",
+    "section": "",
+    "text": "open source 이용한 반자동화",
+    "crumbs": [
+      "개발기록",
+      "opon source",
+      "Open Source"
+    ]
+  },
+  {
+    "objectID": "posts/dicom/dicom.html",
+    "href": "posts/dicom/dicom.html",
+    "title": "DICOM",
+    "section": "",
+    "text": "IP와 포트를 확인\n\n\n\n\n\nDICOM 통신을 확인하기 위해서는 DICOM 통신이 가능한 프로그램을 사용해야 함",
+    "crumbs": [
+      "DICOM"
+    ]
+  },
+  {
+    "objectID": "posts/dicom/dicom.html#dicom-통신-검증",
+    "href": "posts/dicom/dicom.html#dicom-통신-검증",
+    "title": "DICOM",
+    "section": "",
+    "text": "IP와 포트를 확인\n\n\n\n\n\nDICOM 통신을 확인하기 위해서는 DICOM 통신이 가능한 프로그램을 사용해야 함",
+    "crumbs": [
+      "DICOM"
+    ]
+  },
+  {
+    "objectID": "posts/manual.html",
+    "href": "posts/manual.html",
+    "title": "사이트사용법",
+    "section": "",
+    "text": "날짜의 의미\n\n각 웹페이지는 두 가지 날짜가 있으며 이 웹사이트에서는 구별되어 사용되고 있습니다.\n\nPUBLISHED는 최초작성일에 해당하는 개념입니다.\n\n블로그에서 Date-Oldest, Date-Newest 정렬(Order By)할 때 기준으로 사용됩니다.\n\nMODIFIED는 최종수정일에 해당하는 개념입니다.\n\n블로그에서 Default로 정렬할 때 기준으로 사용됩니다.\nDefault로 정렬할 때 내부적으로 MODIFIED 날짜의 최신순으로 되지만, 정렬된 페이지목록에서 각 페이지의 왼쪽의 보여지는 날짜는 MODIFIED가 아닌 PUBLISHED를 보여줍니다. 이로인해 Defalut 정렬에서 각 페이지의 날짜와 정렬이 맞지 않는 것처럼 착각될 수 있으므로 주의를 요합니다.\n\n\n\n\n\n댓글\n\n댓글 기능은 guthub에 가입해야 가능합니다.\n아직 개발중인 기능이라 웹페이지가 갱신될 때 기존 댓글이 사라질 수 있으니 알파/베타 테스터 분들의 양해를 바랍니다."
+  },
+  {
+    "objectID": "posts/tools/Conquest.html",
+    "href": "posts/tools/Conquest.html",
+    "title": "Conquest",
+    "section": "",
+    "text": "개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.",
+    "crumbs": [
+      "Tools",
+      "Conquest"
+    ]
+  },
+  {
+    "objectID": "posts/tools/Conquest.html#구축-필요성",
+    "href": "posts/tools/Conquest.html#구축-필요성",
+    "title": "Conquest",
+    "section": "",
+    "text": "개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.",
+    "crumbs": [
+      "Tools",
+      "Conquest"
+    ]
+  },
+  {
+    "objectID": "posts/tools/Conquest.html#window-운영체제에서의-설치",
+    "href": "posts/tools/Conquest.html#window-운영체제에서의-설치",
+    "title": "Conquest",
+    "section": "Window 운영체제에서의 설치",
+    "text": "Window 운영체제에서의 설치\n\n설치파일\n최신 설치파일은 공식사이트가 아닌 Cnquest User Forum에 공개된 2024년 9월 25일 release된 버전 1.5.0e (dicomserver-1.5.0e.zip, https://forum.iq-image.com/forum/index.php?thread/50654-conquest-1-5-0e-released/)가 최신이다.\n\n\n설치방법\n설치방법은 원하는 폴더에서 설치파일의 압축을 풀면된다. 업그레이드시에는 매뉴얼에 따르면 다음의 지시를 따르면 된다. - 기본적으로 exe 및 dll 파일을 교체하면 업데이트 가능하지만, - 일부 설정 파일(dicom.sql, dgatesop.lst, dicom.ini)을 조정할 경우 데이터베이스를 다시 생성해야 할 수도 있습니다. - 서버는 반드시 업데이트 전에 중지해야 하며, 서비스로 실행 중이면 제어판에서 중지 또는 서비스 해제가 필요합니다. - 데이터베이스 재생성이 필요한 경우 매우 오랜 시간이 걸릴 수 있으므로 주의해야 합니다. - 기존 데이터를 유지하려면 dicom.sql을 백업 후 복원하는 것이 좋습니다. - 저자의 경우는 data폴더, acrnema.map, dicom.ini 파일을 제외하고 삭제한 뒤 설치압축파일을 풀면 데이터와 설정이 유지된 체로 업그레이드 하고 database reganeration을 하였다.\n\n\n활용 현황\n이 서버프로그램으로 저자는 NMDose, NMIQ, NMFullData, NMTEMPSERVER, ZettaPACS를 구축하여 선량분석시스템, 영상품질자동화, clinical PACS모사, 임시서버, clinical PACS 모사의 목적으로 사용하고 있다.\n\n\nLua script\n쿼리를 정교하게 할 수 있다.\n\n\n저장파일의 이름을 지정하는 방식\n%id_%studydate%modality_%series_%sopuid.dcm",
+    "crumbs": [
+      "Tools",
+      "Conquest"
+    ]
+  },
+  {
+    "objectID": "posts/tools/Conquest.html#wsl2-ununtu에서의-설치",
+    "href": "posts/tools/Conquest.html#wsl2-ununtu에서의-설치",
+    "title": "Conquest",
+    "section": "WSL2 Ununtu에서의 설치",
+    "text": "WSL2 Ununtu에서의 설치\n\n준비\n\n\n\nbash\n\nsudo apt install build-essential g++ make apache2 php libapache2-mod-php php-sqlite3 unzip p7zip-full lua5.1 liblua5.1-0-dev lua-socket luarocks liblua5.1-0\n\n\n\n\n\nbash\n\nsudo luarocks install luafilesystem\n\n\n\n\n\nbash\n\nsudo a2enmod cgi\nsudo a2enmod rewrite\nsudo sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf\nsudo sed -i 's/memory_limit = 128M/memory_limit = 512M/g' /etc/php/*/apache2/php.ini\nsudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 250M/g' /etc/php/*/apache2/php.ini\nsudo sed -i 's/post_max_size = 8M/post_max_size = 250M/g' /etc/php/*/apache2/php.ini\nsudo systemctl restart apache2\n\n\n\n\n설치파일 다운로드\n\n\n\nbash\n\nwget http://natura-ingenium.nl/dicomserver/dicomserver150e.zip\nmkdir conquest\ncd conquest\nunzip ../dicomserver150e.zip\nrm ../dicomserver150e.zip\n\n\n\n\n컴파일\n\n\n\nbash\n\nchmod 777 maklinux\n./maklinux\n\n\n\nchoose option 3 or 5 SqLite or SqlLite precompiled\nsay ‘y’ to ‘Regenerate the database’ Deletes previous database contents\nsay ‘y’ to ‘Install as service’ Shows status hit ‘q’ to return\n\n비록 아래의 메세지가 나오더라도 정상임\nFailed to stop conquest.service: Unit conquest.service not loaded.\n\n\n\n\n브라우저로 접속\n\nhttp://localhost/app/newweb/ 또는 http://localhost/app/ohif 주소로 접속\n\n\n\nsystemd 설정\n\ndaemon으로 설정되어 있으므로 systemctl로 관리할 수 있다.\n만약에 설정파일을 변경한 후 재시작을 할려면 아래와 같이 한다.\n\n\n\n\nbash\n\nsudo systemctl restart conquest\n\n\n\n정상작동이 되지 않는다고 생각되면 dgate가 아래의 명령으로 실행되고 있는지 확인해 본다.\n\n\n\n\nbash\n\nsystemctl status conquest",
+    "crumbs": [
+      "Tools",
+      "Conquest"
+    ]
+  },
+  {
+    "objectID": "posts/tools/PostgreSQL.html",
+    "href": "posts/tools/PostgreSQL.html",
+    "title": "PostgreSQL",
+    "section": "",
+    "text": "Berkeley Software Distribution (BSD) license",
+    "crumbs": [
+      "Tools",
+      "PostgreSQL"
+    ]
+  },
+  {
+    "objectID": "posts/tools/PostgreSQL.html#windows-os",
+    "href": "posts/tools/PostgreSQL.html#windows-os",
+    "title": "PostgreSQL",
+    "section": "Windows OS",
+    "text": "Windows OS\n\n완전제거\n\nservices.msc에서 서비스 중지\n제어판에서 제거\n데이터폴더 삭제\n\n\n\n설치/설정 검증\n\nhttps://www.enterprisedb.com/downloads/postgres-postgresql-downloads\n설치경로는 default\n데이터폴더는 E:\\17\n\n노트북에서는 C:\\17설치하였다.\n\nPassword: postres\nPort: 5432\npath 설정은 manual로 해야 한다.\nStack Builder는 굳이 지금단계에서는 설치할 필요 없음\n설치검증은\n\n버전확인\n\n\n\n\nPowerShell\n\npsql --version\n\n\n\n관리자 데이터베이스에 접속하여 검증\n\n\n\n\nPowerShell\n\npsql -U postgres -h localhost -d postgres\n\n\n종료는 exit\n\n\n\nOrthanc를 위한 user/database 만들기\n\n\n\npqsl\n\nCREATE USER nmuser WITH PASSWORD 'nmuser';\n\n\n\n\n\npqsl\n\n\\du\n\n\n\n\n\npqsl\n\nCREATE DATABASE rpacs OWNER nmuser;\n\n\n\n\n\npqsl\n\n\\l",
+    "crumbs": [
+      "Tools",
+      "PostgreSQL"
+    ]
+  },
+  {
+    "objectID": "posts/tools/Slicer.html",
+    "href": "posts/tools/Slicer.html",
+    "title": "Slicer",
+    "section": "",
+    "text": "구축 필요성\n개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.\n\n\nSlicer",
+    "crumbs": [
+      "Tools",
+      "Slicer"
     ]
   },
   {
@@ -572,45 +599,15 @@
     ]
   },
   {
-    "objectID": "posts/tools/portainder.html",
-    "href": "posts/tools/portainder.html",
-    "title": "Docker",
+    "objectID": "posts/development/auth/auth.html",
+    "href": "posts/development/auth/auth.html",
+    "title": "인증시스템",
     "section": "",
-    "text": "공식도커사이트(https://docs.docker.com/engine/install/ubuntu/) 내용을 참고하여 진행함"
-  },
-  {
-    "objectID": "posts/tools/portainder.html#사전-준비",
-    "href": "posts/tools/portainder.html#사전-준비",
-    "title": "Docker",
-    "section": "사전 준비",
-    "text": "사전 준비\n\n방화벽 제한 사항\n어려워서 패스\n\n⚠️ 주의\nufw 또는 firewalld를 사용하여 방화벽을 관리하는 경우, Docker를 통해 컨테이너 포트를 노출하면 방화벽 규칙을 우회할 수 있습니다. 자세한 내용은 Docker와 ufw 문서를 참고하세요.\nDocker는 iptables-nft 및 iptables-legacy만 지원합니다. nft를 사용하여 생성한 방화벽 규칙은 Docker에서 동작하지 않습니다. 방화벽 규칙을 적용하려면 iptables 또는 ip6tables를 사용해야 하며, DOCKER-USER 체인에 추가해야 합니다. 자세한 내용은 패킷 필터링 및 방화벽 문서를 참고하세요.\n\n\n\n운영체제 요구 사항\nDocker Engine을 설치하려면 다음 중 하나의 64비트 우분투(Ubuntu) 버전이 필요합니다.\n\nUbuntu Oracular 24.10\nUbuntu Noble 24.04 (LTS)\nUbuntu Jammy 22.04 (LTS)\nUbuntu Focal 20.04 (LTS)\n\nDocker Engine은 다음 아키텍처를 지원합니다: x86_64 (amd64), armhf, arm64, s390x, ppc64le (ppc64el)\n\n📌 참고:\nUbuntu 기반 배포판(예: Linux Mint)은 공식적으로 지원되지 않습니다."
-  },
-  {
-    "objectID": "posts/tools/portainder.html#이전-버전-제거",
-    "href": "posts/tools/portainder.html#이전-버전-제거",
-    "title": "Docker",
-    "section": "이전 버전 제거",
-    "text": "이전 버전 제거\nDocker Engine을 설치하기 전에 충돌을 방지하기 위해 기존의 비공식 Docker 패키지를 제거해야 합니다.\n\n제거해야 하는 패키지 목록:\n\ndocker.io\ndocker-compose\ndocker-compose-v2\ndocker-doc\npodman-docker\ncontainerd\nrunc\n\nfor 명령어를 사용하면 한줄의 명령어로 모두 제거할 수 있습니다.\n\n\n\nBash\n\nfor pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done\n\n\n완벽제거를 위해서는 다음의 문서를 참고하세요. Docker Engine 설치하기 전에 기존 Docker 제거하기"
-  },
-  {
-    "objectID": "posts/tools/portainder.html#설치",
-    "href": "posts/tools/portainder.html#설치",
-    "title": "Docker",
-    "section": "설치",
-    "text": "설치\n여러가지 설치방법이 있으나 여기서는 apt를 이용한 방법으로 진행\n\nSet up Docker’s apt repository.\n\n\n\nBash\n\nsudo apt-get update\nsudo apt-get install ca-certificates curl\nsudo install -m 0755 -d /etc/apt/keyrings\nsudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc\nsudo chmod a+r /etc/apt/keyrings/docker.asc\n\n\n\nca-certificates: SSL 인증서를 관리하는 패키지로, HTTPS 연결을 신뢰할 수 있도록 설정합니다.\ncurl: 인터넷에서 파일을 다운로드할 수 있도록 하는 명령줄 도구입니다.\ninstall -m 0755 -d /etc/apt/keyrings\n\nm 0755: 디렉토리의 권한을 0755(소유자는 읽기/쓰기/실행 가능, 다른 사용자는 읽기/실행 가능)로 설정\nd: 디렉토리를 생성하는 옵션\n\nf: 요청 실패 시 에러 메시지를 출력\ns: 진행 상태 메시지를 출력하지 않음\nS: -s 옵션과 함께 사용하여 오류 발생 시 메시지를 출력\nL: 리디렉션이 있는 경우 최종 목적지까지 따라감 다운로드된 GPG 키는 /etc/apt/keyrings/docker.asc에 저장됩니다. chmod a+r /etc/apt/keyrings/docker.asc a+r: 모든 사용자(a: all users)에게 읽기(r: read) 권한을 부여 이 설정이 없으면 apt가 GPG 키를 읽을 수 없기 때문에 저장소 검증이 실패할 수 있습니다.\n\n\n\n\nBash\n\necho \\\n  \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \\\n  $(. /etc/os-release && echo \"${UBUNTU_CODENAME:-$VERSION_CODENAME}\") stable\" | \\\n  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null\nsudo apt-get update\n\n\n\ndeb [옵션] 저장소URL 배포판코드네임 [섹션]의 문법을 따릅니다.\ndeb [arch=\\((dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc]\n  - deb: 패키지 저장소를 추가하는 명령어\n  - arch=\\)(dpkg –print-architecture): 현재 시스템의 아키텍처를 출력하는 명령어\n\nsigned-by=/etc/apt/keyrings/docker.asc: GPG 키를 사용하여 저장소를 검증\n\nhttps://download.docker.com/linux/ubuntu\n\n도커 공식 저장소 주소\n\n\\((. /etc/os-release && echo \"\\){UBUNTU_CODENAME:-\\(VERSION_CODENAME}\") stable:\n  - /etc/os-release: 환경변수를 load\n  - && echo \"\\){UBUNTU_CODENAME:-$VERSION_CODENAME}“): CODENAME이 없으면 VERSION_CODENAME을 출력\nsudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null\n\ntee: 파일에 입력한 내용을 출력하고 파일에 저장\n/dev/null: 화면 출력을 무시\n\n\n\n\nInstall the Docker packages.\n\n\n\nBash\n\nsudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin\n\n\n\n\nVerifying by hello-world\n\n\n\nBash\n\nsudo docker run hello-world"
-  },
-  {
-    "objectID": "posts/tools/portainder.html#portainer-설치",
-    "href": "posts/tools/portainder.html#portainer-설치",
-    "title": "Docker",
-    "section": "Portainer 설치",
-    "text": "Portainer 설치\n\nPortainer 개념\nPortainer는 Docker 및 Kubernetes 컨테이너 관리를 위한 웹 기반 UI 도구입니다.\nCLI(Command Line Interface) 없이도 컨테이너, 이미지, 네트워크, 볼륨 등을 손쉽게 관리할 수 있습니다.\n\n🔹 주요 기능\n\n컨테이너 관리: 실행, 중지, 삭제, 로그 확인\n이미지 관리: 이미지 다운로드, 삭제, 태그 지정\n네트워크 및 볼륨 관리: 컨테이너 간 네트워크 설정 및 데이터 볼륨 관리\n사용자 및 액세스 제어: 여러 사용자와 권한 설정 가능\nSwarm 및 Kubernetes 지원: Docker Swarm과 Kubernetes 클러스터 관리 가능\n\n\n\n\n\nPortainer 설치 방법\nPortainer는 Docker 컨테이너로 실행되므로, Docker가 설치되어 있어야 합니다.\n\n볼륨 생성\nPortainer의 설정 및 데이터는 볼륨(volume)에 저장됩니다.\n\n\n\nBash\n\ndocker volume create portainer_data\n\n\n\n\nPortainer 컨테이너 실행**\n이는 원격으로 이미지다운로드를 포함한다.\n\n\n\nBash\n\ndocker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce\n\n\n\n-d: 백그라운드에서 컨테이너 실행\n-p 8000:8000 -p 9000:9000: 호스트 포트와 컨테이너 포트 매핑\n--name=portainer: 컨테이너 이름 지정\n--restart=always: 컨테이너가 종료되면 자동으로 재시작\n-v /var/run/docker.sock:/var/run/docker.sock: 호스트의 Docker 소켓을 컨테이너 내부로 연결\n-v portainer_data:/data: Portainer 설정 및 데이터를 저장할 볼륨 연결\nportainer/portainer-ce: Portainer 컨테이너 이미지\n\n\n\n실행중인 container 확인\n\n\n\nBash\n\ndocker ps\n\n\n\n\nPortainer 제거\n\n\n\nBash\n\ndocker stop portainer\ndocker rm -f portainer\n\n\n\n\n로그인 id & password\nben benjamin060318\n\n\n\ndocker-compose\nDocker Compose는 다중 컨테이너 애플리케이션을 정의하고 실행하기 위한 도구입니다. 이 도구를 활용하면 개발 및 배포 과정을 간소화하고 효율적으로 관리할 수 있습니다.\nCompose를 사용하면 하나의 이해하기 쉬운 YAML 구성 파일 내에서 서비스, 네트워크, 볼륨 등을 포함한 전체 애플리케이션 스택을 손쉽게 관리할 수 있습니다. 단 한 개의 명령어로 구성 파일에 명시된 모든 서비스를 생성하고 실행할 수 있다는 점이 큰 장점입니다.\nDocker Compose는 프로덕션, 스테이징, 개발, 테스트 환경은 물론 CI 워크플로우 등 다양한 환경에서 활용될 수 있습니다. 또한, 전체 애플리케이션의 라이프사이클을 관리하기 위한 명령어들을 제공하여,\n서비스 시작, 중지, 재구축 실행 중인 서비스의 상태 확인 실행 중인 서비스의 로그 출력 스트리밍 서비스에 대한 일회성 명령 실행 등의 작업을 손쉽게 수행할 수 있습니다.\n\n설치\n\n\n\nBash\n\nsudo apt-get install docker-compose\n\n\n\n\n\nBash\n\ndocker-compose --version\n\n\n\n\n프로젝트 만들기\n/home/user/docker-compose-test 디렉토리를 생성하고, 해당 디렉토리로 이동합니다.\n\n\ndocker-compose.yml 파일 작성\n\n\n\ndocker-compose.yml\n\nversion: '3'\n\nservices:\n  portainer:\n    image: portainer/portainer-ce:latest\n    container_name: portainer\n    restart: always\n    ports:\n      - \"8000:8000\"  # Portainer Agent 통신용\n      - \"9000:9000\"  # Portainer 웹 UI 접속용 (http://localhost:9000)\n      - \"9443:9443\"  # HTTPS 접속용\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n      - portainer_data:/data\n\nvolumes:\n  portainer_data:\n\n\n\n\n실행\n\n\n\nBash\n\ndocker compose up -d"
-  },
-  {
-    "objectID": "posts/tools/SDKMAN.html",
-    "href": "posts/tools/SDKMAN.html",
-    "title": "SDKMAN",
-    "section": "",
-    "text": "JAVA 버전관리 용 Git bash에 설치\ncurl -s \"https://get.sdkman.io\" | bash\n경로설정\nC:\\Users\\Administrator\\.sdkman\\bin"
+    "text": "개인정보보호법 등에 적합한 인증시스템을 구축하기 위해 오픈소스 중에서 가장 잘 알려진 Keycloak을 사용하고자 한다.\n우선 nmdose 프로젝트의 사용자를 규정한다. 관리자와 사용자로 구분한다. 관리자는 시스템 설정, 사용자 관리, 감사 기록 조회 등의 권한을 가지며, 사용자는 선량 정보 조회와 같은 제한된 권한만을 가진다.",
+    "crumbs": [
+      "개발기록",
+      "인증시스템",
+      "인증시스템"
+    ]
   }
 ]

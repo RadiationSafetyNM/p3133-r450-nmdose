@@ -1,0 +1,15 @@
+---
+title: "인증시스템"
+description: "Keycloak"
+author: "BenKorea"
+date: "2024-06-22"
+date-modified: last-modified
+categories: [authentication, key-cloak]
+---
+
+개인정보보호법 등에 적합한 인증시스템을 구축하기 위해 오픈소스 중에서 가장 잘 알려진 Keycloak을 사용하고자 한다.
+
+
+우선 nmdose 프로젝트의 사용자를 규정한다.
+관리자와 사용자로 구분한다.
+관리자는 시스템 설정, 사용자 관리, 감사 기록 조회 등의 권한을 가지며, 사용자는 선량 정보 조회와 같은 제한된 권한만을 가진다.
