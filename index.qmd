@@ -1,16 +1,12 @@
 ---
-title: "p3135-r450-template"
-description: "R과 Python을 사용하는 프로젝트 용"
-author: "BenKorea"
-date: "2025-06-14"
-date-modified: last-modified
+title: "Blog"
+listing:
+  contents: posts
+  sort: "date-modified desc"
+  type: default
+  categories: true
+  sort-ui: true
+  filter-ui: true
+page-layout: full
+title-block-banner: true
 ---
-
-
-
-```{r}
-#| label: source
-
-source("_setup.R")
-
-```
