@@ -1,0 +1,70 @@
+---
+title: "PostgreSQL"
+description: "database open source"
+author: "BenKorea"
+date: "2025-03-05"
+date-modified: last-modified
+categories: [tools, open source, database, PostgreSQL]
+---
+
+-   Berkeley Software Distribution (BSD) license
+
+## Windows OS
+
+### 완전제거
+
+-   services.msc에서 서비스 중지
+-   제어판에서 제거
+-   데이터폴더 삭제
+
+### 설치/설정 검증
+
+-   <https://www.enterprisedb.com/downloads/postgres-postgresql-downloads>
+
+-   설치경로는 default
+
+-   데이터폴더는 E:\PostgreSQL\\17\data
+
+    -   노트북에서는 C:\PostgreSQL\\17\data에 설치하였다.
+
+-   Password: postres
+
+-   Port: 5432
+
+-   path 설정은 manual로 해야 한다.
+
+-   Stack Builder는 굳이 지금단계에서는 설치할 필요 없음
+
+-   설치검증은
+
+    -   버전확인
+
+    ```{r check-version, eval=FALSE, filename="PowerShell"}
+    psql --version
+    ```
+
+    -   관리자 데이터베이스에 접속하여 검증
+
+    ```{r check-database, eval=FALSE, filename="PowerShell"}
+    psql -U postgres -h localhost -d postgres
+    ```
+
+-   종료는 exit
+
+### Orthanc를 위한 user/database 만들기
+
+```{r create-user, eval=FALSE, filename="pqsl"}
+CREATE USER nmuser WITH PASSWORD 'nmuser';
+```
+
+```{r create-user-check, eval=FALSE, filename="pqsl"}
+\du
+```
+
+```{r create-database, eval=FALSE, filename="pqsl"}
+CREATE DATABASE rpacs OWNER nmuser;
+```
+
+```{r create-database-check, eval=FALSE, filename="pqsl"}
+\l
+```

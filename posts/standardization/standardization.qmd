@@ -1,0 +1,18 @@
+---
+title: "Standardization"
+description: "핵릐학 검사명칭 표준화"
+author: "BenKorea"
+date: "2025-03-01"
+date-modified: last-modification
+categories: [DICOM]
+---
+
+
+다기관 선량정보수집에 필요한 검사명칭 표준화 현황과 제안
+
+
+
+
+
+
+

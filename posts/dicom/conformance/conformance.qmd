@@ -1,0 +1,12 @@
+---
+title: "Conformance"
+description: "DICOM Conformance"
+author: "BenKorea"
+date: "2025-03-01"
+date-modified: last-modified
+categories: [DICOM, Conformance]
+---
+
+### Discovery 710/610 Optima 560
+
+![](images/clipboard-2397552121.png)

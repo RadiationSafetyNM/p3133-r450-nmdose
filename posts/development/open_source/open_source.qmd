@@ -1,0 +1,19 @@
+---
+title: "Open Source"
+description: "오픈소스들을 이용한 선량추출 시스템 구축과정을 기록"
+author: "BenKorea"
+date: "2024-02-19"
+date-modified: last-modified
+categories: [deveolpment, note, open source]
+---
+
+### Dose Report Retrieve
+- 병원 PACS로부터 추출하는 것은 시도하지 않았다.
+- 핵의학과 mini PACS로부터 선량정보를 가지고 있는 DICOM 파일들만 선택적으로 추출 가능한지 검토하였다.
+- Discovery 710에서 Dose Report는 SeriesDescription 태그에 "Dose Report"가 기록되어 있거나 SeriesNumber 태그에 "999"가 기록되어져 있으므로 이를 이용해서 query & retrieve 할 수 있다.
+- 저자의 병원 Zetta PACS에서는 SeriesDescription이나 SeriesNumber를 필터하여 DICOM send할 수 있는 기능이 없으므로 open source dicom server에서 query & retrieve 하는 방식으로 먼저 접근하였다.
+- Conquest에서는 SeriesDescription
+
+
+open source를 이용해서 추출했을 때 결과는 아래와 같았다.
+

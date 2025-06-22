@@ -1,3 +1,0 @@
-[console_scripts]
-insert-to-db = scripts.py.insert_to_db:main
-load-excel = scripts.py.load_excel:main

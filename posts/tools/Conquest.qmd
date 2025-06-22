@@ -1,0 +1,98 @@
+---
+title: "Conquest"
+description: "dicom server open source"
+author: "BenKorea"
+date: "2025-02-26"
+date-modified: last-modified
+categories: [dicom server]
+---
+
+## 구축 필요성
+
+개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.
+
+## Window 운영체제에서의 설치
+
+### 설치파일
+
+최신 설치파일은 공식사이트가 아닌 Cnquest User Forum에 공개된 2024년 9월 25일 release된 버전 1.5.0e (dicomserver-1.5.0e.zip, https://forum.iq-image.com/forum/index.php?thread/50654-conquest-1-5-0e-released/)가 최신이다.
+
+### 설치방법
+
+설치방법은 원하는 폴더에서 설치파일의 압축을 풀면된다. 업그레이드시에는 매뉴얼에 따르면 다음의 지시를 따르면 된다. - 기본적으로 exe 및 dll 파일을 교체하면 업데이트 가능하지만, - 일부 설정 파일(dicom.sql, dgatesop.lst, dicom.ini)을 조정할 경우 데이터베이스를 다시 생성해야 할 수도 있습니다. - 서버는 반드시 업데이트 전에 중지해야 하며, 서비스로 실행 중이면 제어판에서 중지 또는 서비스 해제가 필요합니다. - 데이터베이스 재생성이 필요한 경우 매우 오랜 시간이 걸릴 수 있으므로 주의해야 합니다. - 기존 데이터를 유지하려면 dicom.sql을 백업 후 복원하는 것이 좋습니다. - 저자의 경우는 data폴더, acrnema.map, dicom.ini 파일을 제외하고 삭제한 뒤 설치압축파일을 풀면 데이터와 설정이 유지된 체로 업그레이드 하고 database reganeration을 하였다.
+
+### 활용 현황
+
+이 서버프로그램으로 저자는 NMDose, NMIQ, NMFullData, NMTEMPSERVER, ZettaPACS를 구축하여 선량분석시스템, 영상품질자동화, clinical PACS모사, 임시서버, clinical PACS 모사의 목적으로 사용하고 있다.
+
+### Lua script
+
+쿼리를 정교하게 할 수 있다.
+
+### 저장파일의 이름을 지정하는 방식
+
+%id\_%studydate%modality\_%series\_%sopuid.dcm
+
+## WSL2 Ununtu에서의 설치
+
+### 준비
+
+```{r conquest_install, eval=FALSE, filename="bash"}
+sudo apt install build-essential g++ make apache2 php libapache2-mod-php php-sqlite3 unzip p7zip-full lua5.1 liblua5.1-0-dev lua-socket luarocks liblua5.1-0
+```
+
+```{r luafilesystem_install, eval=FALSE, filename="bash"}
+sudo luarocks install luafilesystem
+```
+
+```{r web_interface, eval=FALSE, filename="bash"}
+sudo a2enmod cgi
+sudo a2enmod rewrite
+sudo sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+sudo sed -i 's/memory_limit = 128M/memory_limit = 512M/g' /etc/php/*/apache2/php.ini
+sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 250M/g' /etc/php/*/apache2/php.ini
+sudo sed -i 's/post_max_size = 8M/post_max_size = 250M/g' /etc/php/*/apache2/php.ini
+sudo systemctl restart apache2
+```
+
+### 설치파일 다운로드
+
+```{r 150ezip_download, eval=FALSE, filename="bash"}
+wget http://natura-ingenium.nl/dicomserver/dicomserver150e.zip
+mkdir conquest
+cd conquest
+unzip ../dicomserver150e.zip
+rm ../dicomserver150e.zip
+```
+
+### 컴파일
+
+```{r compiole_install, eval=FALSE, filename="bash"}
+chmod 777 maklinux
+./maklinux
+```
+
+-   choose option 3 or 5 SqLite or SqlLite precompiled
+-   say 'y' to 'Regenerate the database' Deletes previous database contents
+-   say 'y' to 'Install as service' Shows status hit 'q' to return
+    -   비록 아래의 메세지가 나오더라도 정상임
+    -   Failed to stop conquest.service: Unit conquest.service not loaded.
+
+### 브라우저로 접속
+
+-   http://localhost/app/newweb/ 또는 http://localhost/app/ohif 주소로 접속
+
+### systemd 설정
+
+-   daemon으로 설정되어 있으므로 systemctl로 관리할 수 있다.
+-   만약에 설정파일을 변경한 후 재시작을 할려면 아래와 같이 한다.
+
+```{r conquest_restart, eval=FALSE, filename="bash"}
+sudo systemctl restart conquest
+```
+
+-   정상작동이 되지 않는다고 생각되면 dgate가 아래의 명령으로 실행되고 있는지 확인해 본다.
+
+```{r conquest_status, eval=FALSE, filename="bash"}
+systemctl status conquest
+```

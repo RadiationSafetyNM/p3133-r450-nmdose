@@ -1,0 +1,8 @@
+---
+title: "OpenREM"
+description: "DICOM에서 선량정보 추출 open source"
+author: "BenKorea"
+date: "2024-02-19"
+date-modified: last-modified
+categories: [deveolpment, dicom, dose extrator, open source, OpenREM]
+---

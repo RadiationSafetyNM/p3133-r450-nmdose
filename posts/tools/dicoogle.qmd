@@ -1,0 +1,26 @@
+---
+title: "Dicoogle"
+description: "dicom server open source"
+author: "BenKorea"
+date: "2025-02-26"
+date-modified: last-modified
+categories: [dicom server, Dicoogle]
+---
+
+
+### 구축 필요성
+
+개발 단계에서 실제 PACS를 모사할 수 있는 별도의 DICOM 서버를 구축할 필요가 아래와 같은 오픈소스들을 검토하였다.
+
+### Sicoogle
+
+
+
+
+
+
+
+
+
+
+

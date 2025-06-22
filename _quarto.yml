@@ -1,14 +1,76 @@
 project:
   type: website
   output-dir: docs
+  
+exclude:
+  - conquest/**
+
 
 website:
-  title: "p3135-r450-template"
+  title: "NMDose"
+  
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - text: 블로그
+        href: index.qmd    
+      - text: 개발기록
+        href: posts/development/development.qmd
+      - text: Tools
+        href: posts/tools/tools.qmd 
+      - text: DICOM
+        href: posts/dicom/dicom.qmd
+      - text: 표준화
+        href: posts/standardization/standardization.qmd        
+      - text: 사이트사용법
+        href: posts/manual.qmd        
+        
+    right:
+      - icon: github
+        href: https://github.com/
+    search: true
+    
+  sidebar:
+    - title: "개발기록"
+      contents:
+        - posts/development/development.qmd
+        - section: "opon source"
+          href: posts/development/open_source/open_source.qmd
+          contents:
+          - posts/development/open_source/others.qmd   
+        - section: "NM Dose"
+          href: posts/development/NMDose/NMDose.qmd
+          contents:
+          - posts/development/NMDose/SpecificCharactorSet_decoding.qmd            
+    - title: "Tools"
+      contents:
+        - posts/tools/tools.qmd
+        - posts/tools/wsl2_ubuntu.qmd   
+        - posts/tools/docker.qmd
+        - posts/tools/dcm4chee.qmd  
+        - posts/tools/dcm4che.qmd
+        - posts/tools/Conquest.qmd
+        - posts/tools/Orthanc.qmd
+        - posts/tools/PostgreSQL.qmd  
+        - posts/tools/Slicer.qmd
+        - posts/tools/dicoogle.qmd
+        - posts/tools/DoseUtility.qmd
+        - posts/tools/OpenREM.qmd
+        - posts/tools/chocolatey.qmd  
+        - posts/tools/dcmtk.qmd         
+    - title: "DICOM"
+      contents:
+        - posts/dicom/dicom.qmd
+        - section: "Information"
+          href: posts/dicom/information/information.qmd
+          contents:
+          - posts/dicom/information/structure.qmd     
+    - title: "Standardization"
+      contents:
+        - posts/standardization/standardization.qmd
+        - section: "검사명"
+          href: posts/standardization/procedure/procedure.qmd
+          contents:
+          - posts/standardization/procedure/KNMIP.qmd      
 
 format:
   html:
@@ -18,5 +80,6 @@ format:
     css: styles.css
     toc: true
 
-editor: visual
-
+    comments:
+      utterances:
+        repo: RadiationSafetyNM/website

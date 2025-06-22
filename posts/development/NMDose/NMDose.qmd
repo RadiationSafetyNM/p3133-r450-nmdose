@@ -1,0 +1,47 @@
+---
+title: "NMDose"
+description: "NMDose 개발과정기록"
+author: "BenKorea"
+date: "2025-02-19"
+date-modified: last-modified
+categories: [deveolpment, note, NMDose]
+---
+
+### Conquest DICOM Server
+
+-   Dose Report들을 가지고 있는 DICOM Server
+-   "C:\NMDose\data"에 데이터가 있음
+
+### 프로젝트 만들기
+
+-   파이썬을 선택한 이유: 다른 언어에 비해 DICOM 개체를 딕셔너리처럼 태그 및 속성으로 접근할 수 있어 코딩이 쉬움
+-   원격저장소 template를 NMIQ로 파생
+-   로컬로 clone
+-   가상화
+-   프로젝트 다른 이름으로 저장
+
+### Quarto에서 주의할 사항
+
+-   코드청크의 순서가 파일을 읽어오는 순서가 되므로 순서에 주의를 요함
+
+### PostgreSQL DB 만들기
+
+-   DICOM header의 메타데이터를 저장하기 위함
+
+### DICOM information
+
+-   "C:\NMDose\data" DICOM으로부터 읽어들일 DICOM tag들을 튜플의 리스트 형식으로 a0_extracted_dicom_tag_information.py에 기록하였다.
+-   
+
+### Python에서 package의 개념
+-   
+
+### DICOM 읽어오기
+
+- dicom_files는 리스트이므로 []로 초기화
+- `os.walk`는 (root, dirs, files) 형태의 튜플을 반환하며 Python의 for loop에서는 리스트나 튜플의 요소를 동시에 할당하는 "언패킹" 기능이 지원되므로 이를 사용
+- 튜플은 변형할 수 없는 리스트라 할 수 있으며, 리스트에 비해 속도가 빠르고 메모리 사용량이 적으며, 함수 반환 값, 여러 변수 할당(Unpacking), for 루프에서 다중 변수 할당 등에 자주 사용된다.
+- endswith()는 str 클래스의 내장 메서드로써 string 문자에 dot 연산자로 붙이면 T/F를 반환함
+- file_path를 만들 때, dirs를 제외함에 주의할 것
+- pydicom.read는 DICOM을 다루기 위한 목적으로 만들어진 Dataset 클래쓰의 객체를 반환해주며, get method를 이용하면 속성명으로 안전하게 (= 값이 없는 경우에는 default를 지정하여) 조회하여 할 수 있다.
+- 스캐너 또는 제조사별로 DICOM 문자코딩이 달라 SpecificCharacterSet을 파악하고, 이를 위한 인코딩디코딩 함수를 만들었다. 하지만 인코딩디코딩 오류전략을 잘 못 구현하여 수정이 필요하다. 디버기을 위해서 original_study_description 등을 사용하고 있다. 

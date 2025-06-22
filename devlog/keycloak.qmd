@@ -1,0 +1,87 @@
+# Keycloak 기반 로그인(사용자 인증) 시스템 개발 일지
+
+## 1. 개요
+
+- **목적:**  
+  프로젝트에서 개인정보보호법 준수, 사용자 역할별 접근 제어,  
+  보안성 강화 및 운영 효율성 확보를 위해  
+  **Keycloak 기반 인증 시스템**을 도입함
+
+- **적용 범위:**  
+  - nmdose FastAPI 서버의 인증/인가(Authorization)
+  - 슈퍼유저/일반 사용자/개발자 권한 분기
+  - 추후 SSO(싱글사인온), OAuth2 연동까지 확장 가능
+
+---
+
+## 2. 주요 의사결정
+
+- **왜 Keycloak?**
+  - 오픈소스이면서 기업/병원에서 널리 쓰임
+  - OAuth2, OIDC, SAML 등 표준 지원
+  - 도커/Docker Compose 기반 빠른 배포
+  - 사용자, 역할, 정책, 2차 인증 등 고급 기능 제공
+  - 관리 UI(웹) 및 API 제공
+
+- **운영 전략**
+  - 개발 단계: Docker 기반 Keycloak 서버 (localhost/dev only)
+  - 운영/병원 적용: 별도 서버, 네트워크/방화벽 분리, TLS 적용  
+    (가능한 경우 물리적 분리, 불가시 Docker Compose 기반 논리적 분리)
+
+---
+
+## 3. 구현/적용 내용
+
+- **Keycloak 서버 구축**
+  - Docker Compose로 keycloak:24.0 이미지 사용
+  - DB: 내장 h2 또는 PostgreSQL 연동(운영시)
+  - realm, client(nmdose-fastapi), user role 생성
+
+- **FastAPI 연동**
+  - `/run.py`, `/src/nmdose/webapp.py` 등에서  
+    `auth-mode` 인자를 통해 `keycloak` 지원  
+  - 인증 미들웨어 및 Depends 구조 설계(더미 포함)  
+  - 인증·인가 실패시 403/401 에러 반환, 인증 정보 로깅
+
+- **환경변수/설정**
+  - `.env` 및 `config/keycloak.yaml`에  
+    Keycloak 서버 주소, realm, client ID/secret 관리  
+  - (Vault 등으로 client secret 보안 저장)
+
+- **사용자/역할 정책**
+  - 슈퍼유저/일반사용자/개발자 등 역할 분기
+  - 권한별 접근제어: `/api/start-findscu` 등은 superuser/dev만 접근 가능
+  - (향후 그룹별, 정책별 세분화 가능)
+
+---
+
+## 4. 회고 및 TODO
+
+- **회고**
+  - 개발환경 Keycloak Docker로 빠르게 검증/적용
+  - 환경별(role, 모드별) 인증 로직 분기 구조 설계 완료
+  - Vault 및 환경변수 보안관리까지 적용하여  
+    개인정보/보안 법규 준수 기반 마련
+
+- **향후 개선점/TODO**
+  - 운영환경: Keycloak 서버 물리 분리 및 TLS 적용
+  - Keycloak Admin 자동화 스크립트 개발
+  - FastAPI Auth 미들웨어 개선(토큰 검증, 세션 연동)
+  - 로그 아웃, 패스워드/2차 인증 강화 정책 도입
+  - 외부 SSO/OAuth2 연동 시나리오 테스트
+
+---
+
+## 5. 참고/연결 자료
+
+- Keycloak 공식문서: https://www.keycloak.org/documentation
+- FastAPI OAuth2 예제: https://fastapi.tiangolo.com/advanced/security/oauth2-scopes/
+- 프로젝트 관련 파일:  
+  - `/src/nmdose/webapp.py`
+  - `/src/nmdose/security/keycloak_config.py`
+  - `/config/keycloak.yaml`
+  - `/run.py`
+  - `.env`
+
+---
+

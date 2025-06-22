@@ -19,7 +19,7 @@ install_requires = [
 ]
 
 setup(
-    name="Template",        # 복제 후 프로젝트명으로 변경
+    name="NMDose",        # 복제 후 프로젝트명으로 변경
     version="0.1.0",
     description="프로젝트 설명을 간단히 적어주세요",
     long_description=long_description,

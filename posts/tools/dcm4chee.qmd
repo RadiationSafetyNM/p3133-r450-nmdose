@@ -1,0 +1,142 @@
+---
+title: "DCM4chee"
+description: "DCM4che로 구현한 open source PACS"
+author: "BenKorea"
+date: "2025-03-07"
+date-modified: last-modified
+categories: [DCM4chee]
+---
+
+## WSL2 Ubuntu에서의 설치
+
+### 매뉴얼
+
+<https://github.com/dcm4che/dcm4chee-arc-light/wiki/Run-minimum-set-of-archive-services-on-a-single-host>
+
+### Docker-compose 설치
+
+-   docker compose랑 달라서 `-`이 있는 형태를 설치해야 합니다.
+
+```{r docker-compose_install, eval=FALSE, filename="bash"}
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+```
+
+### 사용자 및 그룹사용자 지정
+
+-   slapd-dcm4chee, postgres-dcm4chee, dcm4chee-arc 매뉴얼 uid, gid가 999를 넘거나 이미 존재하고 있어, 옵션에 해당하는 이부분을 굳이 변경하여 문제를 일으킬 가능성을 고려하여 설정하지 않고 skip 하였습니다.
+
+-   sudo -i 명령으로 프롬프트가 #로 바뀔 수 있음을 주의해야 합니다.
+
+```{r dcm4chee_user, eval=FALSE, filename="bash"}
+$ sudo -i
+groupadd -r slapd-dcm4chee --gid=1021 && useradd -r -g slapd-dcm4chee --uid=1021 slapd-dcm4chee
+groupadd -r postgres-dcm4chee --gid=999 && useradd -r -g postgres-dcm4chee --uid=999 postgres-dcm4chee
+groupadd -r dcm4chee-arc --gid=1023 && useradd -r -g dcm4chee-arc --uid=1023 dcm4chee-arc
+exit
+```
+
+### dcm4chee 폴더만들기
+
+```{r dcm4chee_folder, eval=FALSE, filename="bash"}
+mkdir dcm4chee
+ch dcm4chee
+```
+
+### docker-compose.yml 작성하기
+
+-   아래의 내용을 복사하여 `dcm4chee` 폴더에 `docker-compose.yml`로 저장합니다.
+-   매뉴얼에는 version이 있지만 불필요한 메세지만 생성되므로 삭제하였습니다.
+
+```{r docker-compose-yml, eval=FALSE, filename='docker-compose.yml'}
+services:
+  ldap:
+    image: dcm4che/slapd-dcm4chee:2.6.7-33.1
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+      - "389:389"
+    environment:
+      STORAGE_DIR: /storage/fs1
+    volumes:
+      - /var/local/dcm4chee-arc/ldap:/var/lib/openldap/openldap-data
+      - /var/local/dcm4chee-arc/slapd.d:/etc/openldap/slapd.d
+  db:
+    image: dcm4che/postgres-dcm4chee:17.1-33
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+     - "5432:5432"
+    environment:
+      POSTGRES_DB: pacsdb
+      POSTGRES_USER: pacs
+      POSTGRES_PASSWORD: pacs
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/local/dcm4chee-arc/db:/var/lib/postgresql/data
+  arc:
+    image: dcm4che/dcm4chee-arc-psql:5.33.1
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "9990:9990"
+      - "9993:9993"
+      - "11112:11112"
+      - "2762:2762"
+      - "2575:2575"
+      - "12575:12575"
+    environment:
+      POSTGRES_DB: pacsdb
+      POSTGRES_USER: pacs
+      POSTGRES_PASSWORD: pacs
+      WILDFLY_CHOWN: /storage
+      WILDFLY_WAIT_FOR: ldap:389 db:5432
+    depends_on:
+      - ldap
+      - db
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/local/dcm4chee-arc/wildfly:/opt/wildfly/standalone
+      - /var/local/dcm4chee-arc/storage:/storage
+```
+
+### compose로 설치하기
+
+-   매뉴얼에서는 docker group에 user를 등록하여 문제가 없으나, 저자는 그러지 않았기 때문에 sudo를 하지 않으면 권한문제로 오류가 발생하므로 매뉴얼과 달리 아래와 같이 `sudo`로 설치해야 합니다.
+
+```{r docker-compose3, eval=FALSE, filename='bash'}
+sudo docker-compose -p dcm4chee up -d
+```
+
+### 웹인터페이스
+
+<http://localhost:8080/dcm4chee-arc/ui2>
+
+or
+
+<https://localhost:8443/dcm4chee-arc/ui2>
+
+## 제거
+
+### 1차 제거
+
+```{r docker-compose-remove, eval=FALSE, filename='bash'}
+sudo docker-compose -p dcm4chee down --rmi all --volumes --remove-orphans
+```
+
+### 리소스 제거
+
+```{r docker-compose-remove2, eval=FALSE, filename='bash'}
+sudo docker system prune -a --volumes
+```

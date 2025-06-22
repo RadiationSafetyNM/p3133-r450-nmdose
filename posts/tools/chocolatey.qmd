@@ -1,0 +1,246 @@
+---
+title: "Chocolatey"
+description: "설치"
+author: "BenKorea"
+date: "2025-04-15"
+date-modified: last-modified
+categories: [Windown, Chocolatey, setup]
+---
+
+## 필요성
+
+-   DCMTK 때문에 설치
+
+### PS 관리자 권한으로 열기
+
+-   `Win+X+A`로 관리자권한 PowerShell을 엽니다.
+-   아래의 명령어를 입력하여 Chocolatey를 설치합니다.
+
+```{r chocolatey_install, eval=FALSE, filename="관리자:Windows PowerShell"}
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+```
+
+이전 버전 설치 시 상황이 기억나지 않으므로 기존 설치폴더를 제거하고 설치하여 성공함
+
+-   Command Prompt를 관리자권한으로 가장 빠르게 여는 방법은 `Win+X`입니다.
+
+-   아래의 명령으로 설치된 Linux 배포판을 확인합니다.
+
+```{r checking_wsl_version, eval=FALSE, filename="관리자권한 Command Prompt"}
+ wsl --list --verbose
+```
+
+또는
+
+```{r checking_wsl_version2, eval=FALSE, filename="관리자권한 Command Prompt"}
+ wsl -l -v
+```
+
+### 우분투 등록 취소 및 제거
+
+아래와 같이 Linux 배포판의 등록을 취소하고 제거합니다.
+
+```{r unregister, eval=FALSE, filename="관리자권한 Command Prompt"}
+wsl --unregister Ubuntu-24.04
+```
+
+-   이때 완료라는 메세지가 출력됩니다.
+
+-   이렇게 하면 우분투가 사용하는 가상 디스크(ext4.vhdx)파일도 자동으로 삭제되어 편리하며 혹시 오류가 있어 삭제되지 않을 수 있으므로 확인하는 것이 바람직합니다.
+
+    -   `C:\Users\<사용자이름>\AppData\Local\Packages\` 에서 `Canonical* 폴더` 삭제
+
+    -   `C:\Program Files\WindowsApps` 내 `Canonical* 폴더` 삭제 (권한 필요)
+
+-   후자는 권한이 필요하여, `C:\Program Files\WindowsApps` 폴더의 소유자를 변경하는 것보다 아래와 같이 Command Prompt를 관리자권한으로 열어서 del 명령으로 삭제하는 것이 훨씬 간편하다.
+
+    -   시작메뉴를 누르고 검색에 cmd를 입력하고, 마우스 오른쪽 버튼을 눌러 관리자권한으로 실행한다.
+
+```{r remove_program_files, eval=FALSE, filename="Command Prompt"}
+del /f /q "C:\경로\파일이름"
+```
+
+### 윈도우에서 앱제거
+
+-   시작메뉴를 누르고 설정을 클릭하고, 앱을 클릭하여 Ubuntu를 검색하여 제거합니다.
+
+### 재부팅
+
+### VirtualMachinePlatform 제거
+
+```{r remove_vm, eval=FALSE, filename="PowerShell"}
+dism.exe /online /disable-feature /featurename:VirtualMachinePlatform /norestart
+```
+
+### wsl 제거
+
+```{r remove_wsl, eval=FALSE, filename="PowerShell"}
+dism.exe /online /disable-feature /featurename:Microsoft-Windows-Subsystem-Linux /norestart
+```
+
+### 재부팅
+
+## WSL2 설치
+
+### Window edition 및 버전확인
+
+윈도우 10 HOME 버전의 경우 ARM64 시스템의 경우 빌드 19041부터 WSL 2를 지원한다.
+
+![](images/노트북_Window_버전.png)
+
+![](images/desktop-window-version.JPG)
+
+### WSL 설치명령
+
+이전과는 다르게 아래의 자동화된 명령한 줄로 설치가 됩니다.
+
+```{r wsl_install, eval=FALSE, filename="PowerShell"}
+wsl --install
+```
+
+이는 wsl 옵션과 가상머신플랫폼을 활성화시키고 최신 리눅스커널까지 upgrade해 줍니다.
+
+### 재부팅
+
+변경사항을 적용하기 위해서는 시스템을 다시 시작하라는 메세지가 나옵니다.
+
+### 중간점검
+
+-   `Win+X+A`로 관리자권한 Command Prompt를 열어서
+    -   리눅스커널이 정상작동하는지 아래의 명령어로 확인합니다.
+
+```{r wsl_validation, eval=FALSE, filename="관리자: 명령 프롬프트"}
+wsl --version
+```
+
+WSL 버전과 커널버전까지 표시되므로 확인할 수 있습니다.
+
+## 우분투설치
+
+-   관리자권한 Command Prompt에서 다음의 명령을 입력하여 최신 배포판을 설치할 수 있습니다.
+-   그런데 방화벽이나 회상방침에 따라 인터넷 연결이 제한적인 경우에는 문제가 발생하여 Public WiFi로 전환하면 성공하게 됩니다.
+
+```{r ubuntu_install, eval=FALSE, filename="관리자: 명령 프롬프트"}
+wsl --install -d Ubuntu
+```
+
+### default Unix user accout
+
+-   소문자가 바람직하다.
+-   passwd를 입력하라는 메세지가 나오면, 비밀번호를 입력한다.
+
+### 우분투 디렉토리 구조
+
+::: {#fig-DirectoryStructureUbuntu}
+```         
+/
+├── bin → /usr/bin         # 주요 실행 파일 (ls, cp 등)이 위치한 디렉토리. 기본 명령어 포함.
+├── boot                   # 부팅 관련 파일이 저장됨 (커널, grub 등).
+├── dev                    # 장치 파일(device files)이 위치 (예: /dev/sda, /dev/null 등).
+├── etc                    # 시스템 설정 파일(configuration files)이 저장된 곳.
+├── home                   # 일반 사용자들의 홈 디렉토리 (예: /home/username).
+├── lib → /usr/lib         # 공유 라이브러리(.so 파일)들이 저장된 디렉토리.
+├── lib64 → /usr/lib64     # 64비트 라이브러리들이 저장됨.
+├── media                  # USB, CD-ROM 등의 자동 마운트 지점.
+├── mnt                    # 외부 장치를 수동으로 마운트할 때 사용하는 디렉토리.
+├── opt                    # 서드파티 애플리케이션들이 설치되는 디렉토리 (예: /opt/google).
+├── proc                   # 실행 중인 프로세스 및 커널 정보가 담긴 가상 파일 시스템.
+├── root                   # root(관리자) 사용자의 홈 디렉토리.
+├── run                    # 부팅 후 생성되는 임시 런타임 데이터가 저장됨.
+├── sbin → /usr/sbin       # 시스템 관리 명령어들이 위치 (예: reboot, iptables 등).
+├── srv                    # 웹, FTP 등 서비스를 위한 데이터 저장용 디렉토리.
+├── sys                    # 시스템 하드웨어 및 장치 정보에 접근하는 가상 파일 시스템.
+├── tmp                    # 임시 파일 저장소. 재부팅 시 대부분 삭제됨.
+├── usr                    # 사용자 명령어 및 라이브러리 저장소.
+│   ├── bin                # 대부분의 사용자 명령어들이 위치.
+│   ├── lib                # 라이브러리 파일들.
+│   ├── lib64              # 64비트 전용 라이브러리.
+│   ├── sbin               # 시스템 명령어.
+│   └── share              # 공유 데이터 (man page, 아이콘 등).
+└── var                    # 로그, 캐시, 메일 등 자주 변경되는 파일 저장소.
+    ├── log                # 시스템 로그 파일 저장소.
+    ├── cache              # 애플리케이션 캐시.
+    └── tmp                # 임시 파일 저장소 (보다 긴 기간 유지될 수 있음).
+```
+
+Ubuntu의 디렉토리 구조
+:::
+
+## 설정
+
+### /etc/wsl.conf
+
+systemd의 설정을 true로 변경하여 systemd를 사용할 수 있도록 설정합니다.
+
+```{r wsl_conf, eval=FALSE, filename="/etc/wsl.conf"}
+[boot]
+systemd=true
+```
+
+## 네트워크
+
+### 윈도우에서 wsl2 가상 IP 확인하기
+
+```{r wsl_ip, eval=FALSE, filename="cmd or ps"}
+wsl hostname -i
+```
+
+-   `127.0.1.1`
+-   그러나 이 결과는 원하는 결과가 아닌 `127.0.0.1`과 유사하다.
+
+```{r net-tools, eval=FALSE, filename="bash"}
+sudo apt-get install net-tools
+```
+
+```{r ifconfig, eval=FALSE, filename="bash"}
+ifconfig
+```
+
+-   eth0의 inet이 원하는 결과이며 윈도우에서 wsl2에 설치된 서버에 접근할 때 사용딥니다. 하지만 부팅 시마다 달라집니다.
+-   참고로 도커와 사용자정의 도커와 루프도 같이 출력됨.
+
+### wsl2 가상 ip 검증
+
+```{r ping, eval=FALSE, filename="cmd"}
+ping 172.21.120.237
+```
+
+-   방화벽등의 원인으로 막힐 수도 있음
+
+### 포트 검증
+
+-   dicom server에서 열어도 포트가 4242라면
+
+```{r port_check, eval=FALSE, filename="cmd"}
+Test-NetConnection -ComputerName 172.21.120.237 -Port 4242
+```
+
+## 이전설치방식
+
+### wsl 옵션 활성화
+
+-   Powershell 관리자권한으로 열어서 아래 명령어를 실행한다.
+
+```{r wsl_activation, eval=FALSE, filename="PowerShell"}
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /norestart
+```
+
+### VirtualMachinePlatform 옵션 활성화
+
+```{r vm_activation, eval=FALSE, filename="PowerShell"}
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /norestart
+```
+
+### Linux 커널 업데이트
+
+윈도우에 포함된 기본 버전을 업데이트하는 방법도 있다.
+
+```{r linux_kenek_update, eval=FALSE, filename="PowerShell"}
+wsl --upgrade
+```
+
+아래의 명령을 전후로 사용하면 Kenel의 버전을 비교하여 알 수 있다.
+
+```{r  linux_kenek_update_validation, eval=FALSE, filename="PowerShell"}
+wsl --status
+```

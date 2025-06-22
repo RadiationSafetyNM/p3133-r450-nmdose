@@ -1,0 +1,25 @@
+---
+title: "SpeficifCharactorSet decoding"
+description: "NMDose 개발 중 DICOM SpeficifCharactorSet decoding 오류 해결하기"
+author: "BenKorea"
+date: "2025-02-25"
+date-modified: last-modified
+categories: [NMDose, DICOM, SpecificCharactorSet, decoding]
+---
+
+DICOM에서 사용되는 문자열은 인코딩(Encoding) 시 1~3바이트(또는 그 이상)의 이진 데이터로 저장되며, 이때 인코딩 방식은 SpecificCharacterSet(0008,0005) 태그에 기록된다. 따라서, SpecificCharacterSet의 값에 맞추어 디코딩(Decoding)하면 문자열이 깨지지 않고 올바르게 변환될 수 있다.
+
+한글이 포함된 문자열은 DICOM에서 최소 두 가지 방식으로 저장될 수 있다. 
+- ISO_IR 149(EUC-KR)는 과거 한글 DICOM 시스템에서 사용되었으며, 완성형 한글만 지원하므로 일부 한글 표현이 제한될 수 있다. 
+- ISO_IR 192(UTF-8)은 유니코드 기반의 인코딩 방식으로 다국어 지원이 가능하며, 최신 DICOM 시스템에서 가장 권장되는 방식이다.
+
+pydicom.dcmread()를 사용하면 DICOM 파일 내의 문자열 데이터는 SpecificCharacterSet(0008,0005)에 따라 자동으로 디코딩되어 Python의 str 객체로 반환됩니다.
+
+만약에 실제 encoding과 specificcharacterset 지정이 다르면 pydicom 결과는 깨진 문자열이 보이게 되는데, 이 때, 지정대로 다시 encoding해주고 dicom 저장 시 되었던 encoding으로 decoding 한다면 오류를 해결 할 수 있다.
+
+a1_dicom_reader에 정의된 함수에서는 조건과 인코딩과 디코딩이 모두 같은 방식으로 잘 못 만들어진 부분이 있다. 수정이 필요함 2025-02-26
+
+스캐너 종류에 따라 검사명이 깨어져 있으며 이는 deccoding fix가 되지 않는다.
+
+
+

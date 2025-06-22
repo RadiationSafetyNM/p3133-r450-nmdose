@@ -1,0 +1,20 @@
+---
+title: "SDKMAN"
+description: "개발도구 관리툴"
+author: "BenKorea"
+date: "2025-03-07"
+date-modified: last-modified
+categories: [JAVA]
+---
+
+JAVA 버전관리 용
+Git bash에 설치
+
+```bash
+curl -s "https://get.sdkman.io" | bash
+```
+
+경로설정
+```path
+C:\Users\Administrator\.sdkman\bin
+```

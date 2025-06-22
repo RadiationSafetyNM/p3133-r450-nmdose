@@ -1,0 +1,48 @@
+---
+title: "DCMTK"
+description: "open source 이용한 반자동화"
+author: "BenKorea"
+date: "2025-03-04"
+date-modified: last-modified
+categories: [deveolpment, note, open source]
+---
+
+## Window 환경에서의 설치
+
+-   DCMTK는 윈도우에서 설치할 수 있는 방법이 여러가지가 있지만 Chocolatey를 설치하여 진행하였다.
+
+-   Chocolatey는 윈도우에서 패키지 관리자를 제공하는 오픈소스 프로젝트로, DCMTK를 포함한 다양한 소프트웨어를 쉽게 설치하고 관리할 수 있습니다.
+
+### Chocolatey를 이용한 설치
+
+-   Chocolatey를 설치하기 위해서는 관리자 권한으로 PowerShell을 실행해야 합니다.
+-   PowerShell을 관리자 권한으로 실행하는 방법은 시작 메뉴에서 "PowerShell"을 검색한 후, 마우스 오른쪽 버튼을 클릭하고 "관리자 권한으로 실행"을 선택합니다.
+-   PowerShell이 열리면 아래의 명령어를 입력하여 Chocolatey를 설치합니다.
+
+```{r install_chocolatey, eval=FALSE, filename="관리자: Window PowerShell"}
+choco install dcmtk
+```
+
+-   설치 메세지가 복잡하여 A로 모두 동의하고 설치를 진행하였다.
+
+-   설치가 완료되면 아래의 명령어를 입력하여 DCMTK가 정상적으로 설치되었는지 확인합니다.
+
+```{r check_installation, eval=FALSE, filename="관리자: Window PowerShell"}
+dcmdump --version
+```
+
+```{r port_check, eval=FALSE, filename="관리자: Windows PowerShell"}
+Test-NetConnection -ComputerName 172.21.120.237 -Port 4242
+```
+
+```{r C-ECHO-test, eval=FALSE, filename="cmd"}
+echoscu -v -aec ORTHANC -aet DCMTK 172.21.120.237 4242
+```
+
+```{r C-STORE-test, eval=FALSE, filename="cmd"}
+storescu -v -aec ORTHANC -aet DCMTK 172.21.120.237 4242 example.dcm
+```
+
+```{r C-FIND-test, eval=FALSE, filename="cmd"}
+findscu -v -aec ORTHANC -aet DCMTK 172.21.120.237 4242   -k QueryRetrieveLevel=STUDY -k PatientName="*"
+```

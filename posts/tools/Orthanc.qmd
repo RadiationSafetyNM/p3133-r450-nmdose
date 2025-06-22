@@ -1,0 +1,204 @@
+---
+title: "Orthanc"
+description: "dicom server open source"
+author: "BenKorea"
+date: "2025-02-26"
+date-modified: last-modified
+categories: [dicom server, Orthanc]
+---
+
+## Windows에서의 설치
+
+### 설치파일
+
+-   <https://orthanc.uclouvain.be/downloads/windows-64/index.html>
+
+### orthanc.json 설정
+
+```         
+{
+  "Name" : "NMResearchPACS",
+  "StorageDirectory" : "C:\\Orthanc\\data",
+  "IndexDirectory" : "C:\\Orthanc\\data",
+  "HttpServerEnabled" : true,
+  "HttpPort" : 8042,  
+  "DicomAet" : "ORTHANC",
+  "DicomModalities" : {
+    "NMPACS" : [ "NMPACS", "172.17.111.214", 104 ],
+    "NMDOSE" : [ "NMDOSE", "127.0.0.1", 5678 ],
+    "SLICER" : [ "SLICER", "172.17.130.79", 11112 ]
+  },
+```
+
+재설치를 대비하여 구글 드라이브에 백업해둠
+
+### postgresql.json 설정
+
+```         
+{
+    /**
+     * Configuration to use PostgreSQL instead of the default SQLite
+     * back-end of Orthanc. You will have to install the
+     * "orthanc-postgresql" package to take advantage of this feature.
+     **/
+    "PostgreSQL" : {
+        // Enable the use of PostgreSQL to store the Orthanc index?
+        "EnableIndex" : true,
+
+        // Enable the use of PostgreSQL to store the DICOM files?
+        "EnableStorage" : false,
+
+        // Option 1: Specify explicit authentication parameters
+        "Host" : "localhost",
+        "Port" : 5432,
+        "Database" : "nmresearchpacs",
+        "Username" : "nmresearchuser",
+        "Password" : "nmresearch",
+
+        // Option 2: Authenticate using PostgreSQL connection URI
+        // "ConnectionUri" : "postgresql://orthanc_user:my_password@localhost:5432/orthanc_db",
+
+        // Optional: Disable the locking of the PostgreSQL database
+        "Lock" : false
+    }
+}
+```
+
+### 방화벽설정
+
+인바운드 4343 허용
+
+## WSL2/Ubuntu 환경에서의 설치
+
+### 패키지 목록 업데이트
+
+```{r sudo-apt-update, eval=FALSE, filename="bash"}
+sudo apt update
+```
+
+### Orthanc 설치
+
+```{r sudo-apt-install, eval=FALSE, filename="bash"}
+sudo apt install orthanc
+```
+
+### orthanc.json 설정
+
+```{r remote-access-allowed, eval=FALSE, filename="orthanc.json"}
+sudo nano /etc/orthanc/orthanc.json
+```
+
+"Name" : "Orthanc_wsl2",
+
+"HttpPort" : 8043,
+
+"DicomAet" : "ORTHANC_WSL2"
+
+"DicomPort" : 4243,
+
+"RemoteAccessAllowed" : false,
+
+"DicomModalities" : {
+
+```         
+    "Orthanc-win" : [ "ORTHANC", "172.21.112.1", 4242 ],
+    "NMTEMPSERVER" : [ "NMTEMPSERVER", "172.21.112.1", 5681 ],
+    "NMPACS" : [ "NMPACS", "172.17.111.214", 104 ]
+```
+
+### Orthanc 재시작
+
+```{r restart-orthanc, eval=FALSE, filename="bash"}
+sudo systemctl restart orthanc
+```
+
+### Orthanc Explorer2 plugin 설치
+
+-   설치명령이 잘 작동하지 않아서 웹페이지에서 so 파일을 직접 다운로드 하였다.
+
+```{r orthanc-explorer2-download, eval=FALSE, filename="browse"}
+https://github.com/orthanc-server/orthanc-explorer-2/releases
+```
+
+-   libOrthancExplorer2-ubuntu.so 파일을 다운로드하여 /usr/share/orthanc/plugins 폴더에 저장하였다.
+-   orthanc.json에서 아래와 같이 설정하였다.
+
+```{r orthanc-explorer22, eval=FALSE, filename="orthanc.json"}
+"Plugins" : {
+  "OrthancExplorer2" : {
+    "Enabled" : true,
+    "Path" : "/usr/share/orthanc/plugins/libOrthancExplorer2-ubuntu.so"
+  }
+}
+```
+
+-   Orthanc을 재시작하였다.
+
+```{r restart-orthanc2, eval=FALSE, filename="bash"}
+sudo systemctl restart orthanc
+```
+
+```{r orthanc-explorer2, eval=FALSE, filename="bash"}
+sudo apt install orthanc-explorer2
+```
+
+### Orthanc systemd 서비스 비활성화
+
+```{r disable-orthanc, eval=FALSE, filename="bash"}
+sudo systemctl disable orthanc
+```
+
+### Orthanc 수동 시작
+
+```{r start-orthanc, eval=FALSE, filename="bash"}
+sudo systemctl start orthanc
+```
+
+### 윈도우 포트포워딩 점검
+
+```{r portproxy_show, eval=FALSE, filename="powershell"}
+netsh interface portproxy show v4tov4
+```
+
+### 윈도우 포트포워딩 리셋
+
+```{r portproxy_reset, eval=FALSE, filename="powershell"}
+netsh interface portproxy reset
+```
+
+### WSL2_IP 알아내기
+
+```{r wsl2_ip, eval=FALSE, filename="bash"}
+sudo ip addr show eth0 | grep inet
+```
+
+172.21.120.237
+
+### 포워딩
+
+```{r portproxy_sho, eval=FALSE, filename="powershell"}
+netsh interface portproxy add v4tov4 `
+  listenaddress=0.0.0.0 listenport=4242 `
+  connectaddress=172.21.120.237 connectport=4243 `
+  protocol=tcp
+```
+
+### 방화벽
+
+### 점검
+
+```{r portproxy_check, eval=FALSE, filename="powershell"}
+nc -vz <NMPACS_IP> 104
+```
+
+## orthanc-docker
+
+-   orthanc-docker 폴더이름으로 orthanc 이미지로만 docker-compose를 실행하였다.
+-   docker-compose.yml 파일에 docker network를 지정하지 않았기 때문에 orthanc-docker container와 함께 orthanc-docker_default 이름의 network가 만들어졌다.
+-   DCM4CHEE은 compose로 했을 때의 값을 일단 그대로 해 보았다.
+
+```         
+            "dcm4chee" : [ "DCM4CHEE", "arc", 11112 ]
+```
+
+-   그러나 같은 네트워크에 속해있지 않기 때문에 orthanc-docker에서 DCM4CHEE에 접근할 수 없을 것이다.

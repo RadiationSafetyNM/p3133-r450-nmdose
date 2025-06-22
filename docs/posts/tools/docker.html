@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="BenKorea">
+<meta name="dcterms.date" content="2025-03-09">
+<meta name="description" content="Ubuntu에 Docker 설치 및 사용법">
+
+<title>Docker – NMDose</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-ddd961a2510921635943dfbbd19534c4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">NMDose</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">블로그</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts/development/development.html"> 
+<span class="menu-text">개발기록</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../posts/tools/tools.html" aria-current="page"> 
+<span class="menu-text">Tools</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts/dicom/dicom.html"> 
+<span class="menu-text">DICOM</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts/standardization/standardization.html"> 
+<span class="menu-text">표준화</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts/manual.html"> 
+<span class="menu-text">사이트사용법</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../posts/tools/docker.html">Docker</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tools</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/wsl2_ubuntu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">WSL2/Ubuntu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/docker.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Docker</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/dcm4chee.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DCM4chee</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/dcm4che.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DCM4che</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/Conquest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conquest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/Orthanc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Orthanc</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/PostgreSQL.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PostgreSQL</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/Slicer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Slicer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/dicoogle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dicoogle</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/DoseUtility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DoseUtility</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/OpenREM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OpenREM</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/chocolatey.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Chocolatey</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../posts/tools/dcmtk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DCMTK</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#사전-준비" id="toc-사전-준비" class="nav-link active" data-scroll-target="#사전-준비">사전 준비</a>
+  <ul class="collapse">
+  <li><a href="#방화벽-제한-사항" id="toc-방화벽-제한-사항" class="nav-link" data-scroll-target="#방화벽-제한-사항">방화벽 제한 사항</a></li>
+  <li><a href="#운영체제-요구-사항" id="toc-운영체제-요구-사항" class="nav-link" data-scroll-target="#운영체제-요구-사항">운영체제 요구 사항</a></li>
+  </ul></li>
+  <li><a href="#wsl2ubuntu에서의-설치" id="toc-wsl2ubuntu에서의-설치" class="nav-link" data-scroll-target="#wsl2ubuntu에서의-설치">WSL2/Ubuntu에서의 설치</a>
+  <ul class="collapse">
+  <li><a href="#이전-버전-제거" id="toc-이전-버전-제거" class="nav-link" data-scroll-target="#이전-버전-제거">이전 버전 제거</a></li>
+  <li><a href="#설치" id="toc-설치" class="nav-link" data-scroll-target="#설치">설치</a></li>
+  <li><a href="#docker-compose" id="toc-docker-compose" class="nav-link" data-scroll-target="#docker-compose">docker-compose</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Docker</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">docker</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Ubuntu에 Docker 설치 및 사용법
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>BenKorea </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 9, 2025</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">June 22, 2025</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>공식도커사이트(https://docs.docker.com/engine/install/ubuntu/) 내용을 참고하여 진행함</p>
+<section id="사전-준비" class="level2">
+<h2 class="anchored" data-anchor-id="사전-준비">사전 준비</h2>
+<section id="방화벽-제한-사항" class="level3">
+<h3 class="anchored" data-anchor-id="방화벽-제한-사항">방화벽 제한 사항</h3>
+<p>어려워서 패스</p>
+<blockquote class="blockquote">
+<p><strong>⚠️ 주의</strong><br>
+<code>ufw</code> 또는 <code>firewalld</code>를 사용하여 방화벽을 관리하는 경우, Docker를 통해 컨테이너 포트를 노출하면 방화벽 규칙을 우회할 수 있습니다. 자세한 내용은 <a href="https://docs.docker.com/network/iptables/">Docker와 ufw</a> 문서를 참고하세요.</p>
+<p>Docker는 <code>iptables-nft</code> 및 <code>iptables-legacy</code>만 지원합니다. <code>nft</code>를 사용하여 생성한 방화벽 규칙은 Docker에서 동작하지 않습니다. 방화벽 규칙을 적용하려면 <code>iptables</code> 또는 <code>ip6tables</code>를 사용해야 하며, <code>DOCKER-USER</code> 체인에 추가해야 합니다. 자세한 내용은 <a href="https://docs.docker.com/network/packet-filtering-firewalls/">패킷 필터링 및 방화벽</a> 문서를 참고하세요.</p>
+</blockquote>
+</section>
+<section id="운영체제-요구-사항" class="level3">
+<h3 class="anchored" data-anchor-id="운영체제-요구-사항">운영체제 요구 사항</h3>
+<p>Docker Engine을 설치하려면 다음 중 하나의 64비트 우분투(Ubuntu) 버전이 필요합니다.</p>
+<ul>
+<li><code>Ubuntu Oracular 24.10</code></li>
+<li><code>Ubuntu Noble 24.04 (LTS)</code></li>
+<li><code>Ubuntu Jammy 22.04 (LTS)</code></li>
+<li><code>Ubuntu Focal 20.04 (LTS)</code></li>
+</ul>
+<p>Docker Engine은 다음 아키텍처를 지원합니다: <code>x86_64 (amd64)</code>, <code>armhf</code>, <code>arm64</code>, <code>s390x</code>, <code>ppc64le (ppc64el)</code></p>
+<blockquote class="blockquote">
+<p><strong>📌 참고:</strong><br>
+Ubuntu 기반 배포판(예: Linux Mint)은 공식적으로 지원되지 않습니다.</p>
+</blockquote>
+</section>
+</section>
+<section id="wsl2ubuntu에서의-설치" class="level2">
+<h2 class="anchored" data-anchor-id="wsl2ubuntu에서의-설치">WSL2/Ubuntu에서의 설치</h2>
+<section id="이전-버전-제거" class="level3">
+<h3 class="anchored" data-anchor-id="이전-버전-제거">이전 버전 제거</h3>
+<p>Docker Engine을 설치하기 전에 충돌을 방지하기 위해 기존의 비공식 Docker 패키지를 제거해야 합니다.</p>
+<section id="제거해야-하는-패키지-목록" class="level4">
+<h4 class="anchored" data-anchor-id="제거해야-하는-패키지-목록">제거해야 하는 패키지 목록:</h4>
+<ul>
+<li><code>docker.io</code></li>
+<li><code>docker-compose</code></li>
+<li><code>docker-compose-v2</code></li>
+<li><code>docker-doc</code></li>
+<li><code>podman-docker</code></li>
+<li><code>containerd</code></li>
+<li><code>runc</code></li>
+</ul>
+<p>for 명령어를 사용하면 한줄의 명령어로 모두 제거할 수 있습니다.</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pkg <span class="cf">in</span> docker.io docker<span class="sc">-</span>doc docker<span class="sc">-</span>compose docker<span class="sc">-</span>compose<span class="sc">-</span>v2 podman<span class="sc">-</span>docker containerd runc; do sudo apt<span class="sc">-</span>get remove <span class="sc">$</span>pkg; done</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>완벽제거를 위해서는 다음의 문서를 참고하세요. <a href="https://docs.docker.com/engine/install/ubuntu/#uninstall-old-versions">Docker Engine 설치하기 전에 기존 Docker 제거하기</a></p>
+</section>
+</section>
+<section id="설치" class="level3">
+<h3 class="anchored" data-anchor-id="설치">설치</h3>
+<p>여러가지 설치방법이 있으나 여기서는 apt를 이용한 방법으로 진행</p>
+<section id="set-up-dockers-apt-repository." class="level4">
+<h4 class="anchored" data-anchor-id="set-up-dockers-apt-repository.">Set up Docker’s apt repository.</h4>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sudo apt<span class="sc">-</span>get update</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sudo apt<span class="sc">-</span>get install ca<span class="sc">-</span>certificates curl</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>sudo install <span class="sc">-</span>m <span class="dv">0755</span> <span class="sc">-</span>d <span class="sc">/</span>etc<span class="sc">/</span>apt<span class="sc">/</span>keyrings</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>sudo curl <span class="sc">-</span>fsSL https<span class="sc">:</span><span class="er">//</span>download.docker.com<span class="sc">/</span>linux<span class="sc">/</span>ubuntu<span class="sc">/</span>gpg <span class="sc">-</span>o <span class="sc">/</span>etc<span class="sc">/</span>apt<span class="sc">/</span>keyrings<span class="sc">/</span>docker.asc</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sudo chmod a<span class="sc">+</span>r <span class="sc">/</span>etc<span class="sc">/</span>apt<span class="sc">/</span>keyrings<span class="sc">/</span>docker.asc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<ul>
+<li>ca-certificates: SSL 인증서를 관리하는 패키지로, HTTPS 연결을 신뢰할 수 있도록 설정합니다.</li>
+<li>curl: 인터넷에서 파일을 다운로드할 수 있도록 하는 명령줄 도구입니다.</li>
+<li>install -m 0755 -d /etc/apt/keyrings
+<ul>
+<li>m 0755: 디렉토리의 권한을 0755(소유자는 읽기/쓰기/실행 가능, 다른 사용자는 읽기/실행 가능)로 설정</li>
+<li>d: 디렉토리를 생성하는 옵션</li>
+</ul></li>
+<li>f: 요청 실패 시 에러 메시지를 출력</li>
+<li>s: 진행 상태 메시지를 출력하지 않음</li>
+<li>S: -s 옵션과 함께 사용하여 오류 발생 시 메시지를 출력</li>
+<li>L: 리디렉션이 있는 경우 최종 목적지까지 따라감 다운로드된 GPG 키는 /etc/apt/keyrings/docker.asc에 저장됩니다. chmod a+r /etc/apt/keyrings/docker.asc a+r: 모든 사용자(a: all users)에게 읽기(r: read) 권한을 부여 이 설정이 없으면 apt가 GPG 키를 읽을 수 없기 때문에 저장소 검증이 실패할 수 있습니다.</li>
+</ul>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>echo \</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">  $(. /etc/os-release &amp;&amp; echo "</span><span class="sc">$</span>{UBUNTU_CODENAME<span class="sc">:-</span><span class="er">$</span>VERSION_CODENAME}<span class="st">") stable"</span> <span class="sc">|</span> \</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  sudo tee <span class="sc">/</span>etc<span class="sc">/</span>apt<span class="sc">/</span>sources.list.d<span class="sc">/</span>docker.list <span class="sc">&gt;</span> <span class="er">/</span>dev<span class="sc">/</span>null</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sudo apt<span class="sc">-</span>get update</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<ul>
+<li>deb [옵션] 저장소URL 배포판코드네임 [섹션]의 문법을 따릅니다.</li>
+<li>deb [arch=<span class="math inline">\((dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc]
+  - deb: 패키지 저장소를 추가하는 명령어
+  - arch=\)</span>(dpkg –print-architecture): 현재 시스템의 아키텍처를 출력하는 명령어
+<ul>
+<li>signed-by=/etc/apt/keyrings/docker.asc: GPG 키를 사용하여 저장소를 검증</li>
+</ul></li>
+<li>https://download.docker.com/linux/ubuntu
+<ul>
+<li>도커 공식 저장소 주소</li>
+</ul></li>
+<li><span class="math inline">\((. /etc/os-release &amp;&amp; echo "\)</span>{UBUNTU_CODENAME:-<span class="math inline">\(VERSION_CODENAME}") stable:
+  - /etc/os-release: 환경변수를 load
+  - &amp;&amp; echo "\)</span>{UBUNTU_CODENAME:-$VERSION_CODENAME}“): CODENAME이 없으면 VERSION_CODENAME을 출력</li>
+<li>sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+<ul>
+<li>tee: 파일에 입력한 내용을 출력하고 파일에 저장</li>
+<li>/dev/null: 화면 출력을 무시</li>
+</ul></li>
+</ul>
+</section>
+<section id="install-the-docker-packages." class="level4">
+<h4 class="anchored" data-anchor-id="install-the-docker-packages.">Install the Docker packages.</h4>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sudo apt<span class="sc">-</span>get install docker<span class="sc">-</span>ce docker<span class="sc">-</span>ce<span class="sc">-</span>cli containerd.io docker<span class="sc">-</span>buildx<span class="sc">-</span>plugin docker<span class="sc">-</span>compose<span class="sc">-</span>plugin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="verifying-by-hello-world" class="level4">
+<h4 class="anchored" data-anchor-id="verifying-by-hello-world">Verifying by hello-world</h4>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sudo docker run hello<span class="sc">-</span>world</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>Docker 설치 파일 구조 (Ubuntu 기준)</p>
+<pre><code>/
+├── usr/
+│   ├── bin/
+│   │   ├── docker               ← Docker CLI 실행 파일
+│   │   ├── docker-compose       ← Docker Compose (별도 설치 시)
+│   │   ├── containerd           ← 컨테이너 런타임
+│   │   └── runc                 ← 컨테이너 실행기
+│   └── share/
+│       └── docker-engine/       ← (있을 경우) 문서, 기본 설정 등
+│
+├── etc/
+│   └── docker/
+│       └── daemon.json          ← Docker 데몬 설정 파일
+│
+├── var/
+│   ├── lib/
+│   │   └── docker/              ← 이미지, 컨테이너, 볼륨 등 저장소
+│   └── run/
+│       └── docker.sock          ← Docker 데몬 통신용 소켓 파일
+│
+├── lib/
+│   └── systemd/
+│       └── system/
+│           └── docker.service   ← systemd 서비스 유닛 파일
+│
+├── etc/
+│   └── systemd/
+│       └── system/
+│           └── docker.service.d/ ← 사용자 정의 systemd 설정 디렉터리
+│
+└── home/
+    └── 사용자명/
+        └── .docker/             ← 사용자 설정, 인증 토큰 등</code></pre>
+</section>
+</section>
+<section id="docker-compose" class="level3">
+<h3 class="anchored" data-anchor-id="docker-compose">docker-compose</h3>
+<p>Docker Compose는 다중 컨테이너 애플리케이션을 정의하고 실행하기 위한 도구입니다. 이 도구를 활용하면 개발 및 배포 과정을 간소화하고 효율적으로 관리할 수 있습니다.</p>
+<p>Compose를 사용하면 하나의 이해하기 쉬운 YAML 구성 파일 내에서 서비스, 네트워크, 볼륨 등을 포함한 전체 애플리케이션 스택을 손쉽게 관리할 수 있습니다. 단 한 개의 명령어로 구성 파일에 명시된 모든 서비스를 생성하고 실행할 수 있다는 점이 큰 장점입니다.</p>
+<p>Docker Compose는 프로덕션, 스테이징, 개발, 테스트 환경은 물론 CI 워크플로우 등 다양한 환경에서 활용될 수 있습니다. 또한, 전체 애플리케이션의 라이프사이클을 관리하기 위한 명령어들을 제공하여,</p>
+<p>서비스 시작, 중지, 재구축 실행 중인 서비스의 상태 확인 실행 중인 서비스의 로그 출력 스트리밍 서비스에 대한 일회성 명령 실행 등의 작업을 손쉽게 수행할 수 있습니다.</p>
+<section id="설치-1" class="level4">
+<h4 class="anchored" data-anchor-id="설치-1">설치</h4>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sudo apt<span class="sc">-</span>get install docker<span class="sc">-</span>compose</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>docker<span class="sc">-</span>compose <span class="sc">--</span>version</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="프로젝트-만들기" class="level4">
+<h4 class="anchored" data-anchor-id="프로젝트-만들기">프로젝트 만들기</h4>
+<p>/home/user/docker-compose-test 디렉토리를 생성하고, 해당 디렉토리로 이동합니다.</p>
+</section>
+<section id="docker-compose.yml-파일-작성" class="level4">
+<h4 class="anchored" data-anchor-id="docker-compose.yml-파일-작성">docker-compose.yml 파일 작성</h4>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>docker-compose.yml</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>version<span class="sc">:</span> <span class="st">'3'</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>services<span class="sc">:</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  portainer<span class="sc">:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    image<span class="sc">:</span> portainer<span class="sc">/</span>portainer<span class="sc">-</span>ce<span class="sc">:</span>latest</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    container_name<span class="sc">:</span> portainer</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    restart<span class="sc">:</span> always</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    ports<span class="sc">:</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span> <span class="st">"8000:8000"</span>  <span class="co"># Portainer Agent 통신용</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span> <span class="st">"9000:9000"</span>  <span class="co"># Portainer 웹 UI 접속용 (http://localhost:9000)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span> <span class="st">"9443:9443"</span>  <span class="co"># HTTPS 접속용</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    volumes<span class="sc">:</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span> <span class="er">/</span>var<span class="sc">/</span>run<span class="sc">/</span>docker.sock<span class="sc">:</span><span class="er">/</span>var<span class="sc">/</span>run<span class="sc">/</span>docker.sock</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span> portainer_data<span class="sc">:</span><span class="er">/</span>data</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>volumes<span class="sc">:</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  portainer_data<span class="sc">:</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="실행" class="level4">
+<h4 class="anchored" data-anchor-id="실행">실행</h4>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>docker compose up <span class="sc">-</span>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="도커-이미지-확인" class="level4">
+<h4 class="anchored" data-anchor-id="도커-이미지-확인">도커 이미지 확인</h4>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Bash</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>docker images </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="RadiationSafetyNM/website" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

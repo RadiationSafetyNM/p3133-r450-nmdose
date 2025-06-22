@@ -1,0 +1,18 @@
+---
+title: "DICOM"
+description: "DICOM 공부한 것을 정리하였습니다."
+author: "BenKorea"
+date: "2025-03-01"
+date-modified: last modified
+categories: [DICOM]
+---
+
+## DICOM 통신 검증
+
+### TCP/IP 통신 확인
+
+-   IP와 포트를 확인
+
+### DICOM 통신 확인
+
+-   DICOM 통신을 확인하기 위해서는 DICOM 통신이 가능한 프로그램을 사용해야 함

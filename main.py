@@ -6,7 +6,7 @@ logger = get_logger(__name__)
 
 def main():
     logger.info(
-        "===== Starting MyProject (version: %s, env: %s) =====",
+        "===== Starting NMDose Project (version: %s, env: %s) =====",
         "1.0.0", os.getenv('ENV', 'development')
     )
     logger.info("Python version: %s", platform.python_version())

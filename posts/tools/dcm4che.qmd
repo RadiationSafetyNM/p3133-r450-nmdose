@@ -1,0 +1,100 @@
+---
+title: "DCM4che"
+description: "DCM4che toolkit"
+author: "BenKorea"
+date: "2025-03-07"
+date-modified: last-modified
+categories: [DCM4che]
+---
+
+## WSL2 Ubuntu 환경에서의 설치
+
+<https://github.com/dcm4che/dcm4che/blob/master/README.md>
+
+### cpu 아키텍쳐 알아내기
+
+```{r cpu-arch, eval=FALSE, filename="bash"}
+uname -m
+```
+
+-   kimbi-laptop은 x86_64이므로 linux-x86-64 패키지로 진행
+
+### SDKMAN
+
+-   SDKMAN(Software Development Kit MANager)은 유닉스 환경에서 여러 소프트웨어 개발 키트를 손쉽게 관리할 수 있는 CLI 도구이다.
+-   여기에서는 프로젝트별로 Java 버전을 관리(matching)하기 위해 설치하였다.
+
+#### 설치
+
+-   curl(Client URL)은 명령줄에서 HTTP, HTTPS, FTP, SCP 등의 프로토콜을 사용하여 데이터를 전송하는 도구인데, Git bash가 설치될 때 같이 설치되므로 git bash에서 아래와 같이 설치하였다.
+
+```{r sdkman_install, eval=FALSE, filename="bash"}
+curl -s "https://get.sdkman.io" | bash
+```
+
+-   SDKMAN의 초기화 스크립트를 현재 셸에서 실행하여, SDKMAN 관련 설정과 기능들을 활성화시키는 역할을 합니다.
+
+```{r sdkman_path, eval=FALSE, filename="bash"}
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+```
+
+```{r sdkman_validation, eval=FALSE, filename="bash"}
+sdk version
+```
+
+### JAVA
+
+```{r sdkman_list_java, eval=FALSE, filename="bash"}
+sdk list java
+```
+
+```{r sdkman_java_install, eval=FALSE, filename="bash"}
+sdk install java 17.0.14-tem
+```
+
+-   설치 후 bash 재 실행 후 버전을 확인
+
+```{r java_version, eval=FALSE, filename="bash"}
+java --version
+```
+
+### Apache Maven
+
+#### 설치
+
+```{r sdkman_list_maven, eval=FALSE, filename="bash"}
+sdk list maven
+```
+
+```{r sdkman_maven_install, eval=FALSE, filename="bash"}
+sdk install maven
+```
+
+-   설치 후 bash 재 실행 후 버전을 확인
+
+```{r maven_version, eval=FALSE, filename="bash"}
+mvn -version
+```
+
+### DCM4che
+
+#### clone
+
+```{r dcm4che_clone, eval=FALSE, filename="bash"}
+git clone https://github.com/dcm4che/dcm4che.git
+```
+
+#### build up
+
+-   인터넷연결에 제한적인 정책이 있는 경우 오류가 발생하여 pulic wifi로 진행하였습니다.
+
+```{r dcm4che_build, eval=FALSE, filename="bash"}
+cd dcm4che
+./mvnw install
+```
+
+#### documents
+
+-   생각보다 문서가 없습니다.
+
+<https://github.com/dcm4che/dcm4che>
