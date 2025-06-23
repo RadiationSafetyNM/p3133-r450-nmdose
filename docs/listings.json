@@ -3,9 +3,9 @@
     "listing": "/index.html",
     "items": [
       "/posts/development/auth/auth.html",
-      "/posts/development/development.html",
       "/posts/development/NMDose/NMDose.html",
       "/posts/development/NMDose/SpecificCharactorSet_decoding.html",
+      "/posts/development/development.html",
       "/posts/development/open_source/open_source.html",
       "/posts/development/open_source/others.html",
       "/posts/dicom/conformance/conformance.html",

@@ -202,6 +202,8 @@ volumes:
 
 #### 실행
 
+이전에는 docker-compose가 사용되었으나 앞으로는 docker compose가 표준으로 사용되므로 이르 차요
+
 ```{r docker_compose_portainer, eval=FALSE, filename="Bash"}
 docker compose up -d
 ```

@@ -27,7 +27,7 @@ categories: [authentication, KeyCloak]
     - `nmdose-user`: 일반 사용자 권한
 
 ## 4. 계정명 규칙
-- Vault 등 외부 시스템과의 연동을 고려하여, 계정명에 하이폰(`-`) 사용 가능  
+- Vault 등 외부 시스템과의 연동을 고려하여, 계정명에 하이폰(`-`) 사용
   예: `nmdose-superuser`
 
 ## 5. 인증 및 권한 부여 흐름
@@ -65,4 +65,69 @@ token = get_token("nmdose-superuser", "비밀번호")
 
 ---
 
-이와 같이 Keycloak을 활용한 인증 시스템을 설계하고, 관리자/사용자 역할을 명확히 구분하여 보안성과 관리 효율성을 높일다.
+## 설치
+외부서버를 모사하기 위해 docker로 설치한다.
+
+```{r keycloak-docker, eval=FALSE, filename="projects/keycloak-server/docker-compose.yml"}
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: kc-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: kcuser
+      POSTGRES_PASSWORD: kcpass
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.2
+    container_name: keycloak
+    command:
+      - start
+      - --hostname=auth.example.com
+      - --db=postgres
+      - --db-url-host=kc-db
+      - --db-username=kcuser
+      - --db-password=kcpass
+      - --db-url-database=keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+```
+일단은 운영모드로 설치해본다.
+```{r keycloak-docker-envr, eval=FALSE, filename="bash"}
+sudo docker compose up -d
+```
+도커로 잘 실행되었다고 생각되어도 8080에서 접속되지 않는 이유는?
+HTTPS로 접속하기 위해서 키와 인증서가 필요
+무료는 Let's Encrypt
+그러나 도메인이 필요하므로
+
+병원 내부망(도메인 없는 사설망)에서는
+공인 인증서가 아닌
+“자가서명 인증서” 또는 “사내 CA 인증서”를 사용해
+HTTPS 암호화 통신을 적용하는 것이 업계표준
+
+openssl은 대부분의 wsl2에 설치되어 있어 진행
+```{r openssl, eval=FALSE, filename="bash"}
+openssl req \
+  -x509 \
+  -newkey rsa:2048 \
+  -keyout mykey.key \
+  -out mycert.crt \
+  -days 365 \
+  -nodes \
+  -subj "/C=KR/ST=Seoul/L=Seoul/O=KCCH/OU=RPythonStudy/CN=localhost" \
+  -addext "subjectAltName = DNS:localhost, IP:127.0.0.1, DNS:keycloak-server"
+```
+
+
