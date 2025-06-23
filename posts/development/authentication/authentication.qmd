@@ -1,0 +1,128 @@
+---
+title: "인증시스템구축"
+description: "게인정보보호법 적합하도록"
+author: "BenKorea feat Copilot"
+date: "2024-06-22"
+date-modified: last-modified
+categories: [Authentication, KeyCloak]
+---
+
+### 인증 시스템 선택
+- 개인정보보호법 준수를 위해 사용자별 권한 관리 필요
+- 오픈소스 Keycloak 도입 결정
+
+### 사용자 역할 정의
+- 관리자(nmdose-superuser):  
+  - 시스템 설정, 사용자 관리, 감사 기록 조회 등 모든 권한 보유
+- 일반 사용자(nmdose-user):  
+  - 선량 정보 조회 등 제한된 기능만 접근 가능
+
+### keycloak 설치
+- 인증 서버는 nmdose 시스템과 분리된 서버에 설치하는 것이 이상적이나, 개발 단계에서는 Docker를 활용해 분리된 서버를 모사함
+- 운영(Production) 환경에서는 별도의 데이터베이스 지정 및 HTTPS(TLS) 인증서 적용 필요
+- 병원 내부망(도메인 없는 사설망)에서는 공인 인증서가 아닌 “자가서명 인증서” 또는 “사내 CA 인증서”를 사용 필요하므로
+    - ubuntu에 제공되는 openssl로 자가서명 인증서를 발급
+
+```{r openssl, eval=FALSE, filename="bash"}
+openssl req \
+  -x509 \
+  -newkey rsa:2048 \
+  -keyout mykey.key \
+  -out mycert.crt \
+  -days 365 \
+  -nodes \
+  -subj "/C=KR/ST=Seoul/L=Seoul/O=KCCH/OU=RPythonStudy/CN=localhost" \
+  -addext "subjectAltName = DNS:localhost, IP:127.0.0.1, DNS:keycloak-server"
+```
+
+업계표준에 따른 저장폴더는
+```{r certs, eval=FALSE, filename="bash"}
+sudo mkdir -p /etc/nmdose/certs/
+```
+
+```{r cp, eval=FALSE, filename="bash"}
+sudo cp ~/projects/keycloak-server/mycert.crt /etc/nmdose/certs/server.crt
+sudo cp ~/projects/keycloak-server/mykey.key /etc/nmdose/certs/server.key
+```
+파일의 권한에 대해서도 항상 신경써야 한다.
+```{r chmod, eval=FALSE, filename="bash"}
+sudo chmod 644 /etc/nmdose/certs/server.key
+sudo chmod 644 /etc/nmdose/certs/server.crt
+```
+그러나 chmod 644는 보안정책에 위반되므로 vault로 동적으로 주입하는 것으로 전환해야 함.
+
+아래는 chmod 644에서 성공하기는 했음. 그러나 vault로 수정이 필요함.
+
+매뉴얼에 따르면 keycloak production mode는 3가지 설정이 필요하다.
+    - HTTPS
+    - hostname
+    - TLS
+    
+커맨드라인에서 bin/kc.[sh|bat] start --https-certificate-file=/path/to/certfile.pem --https-certificate-key-file=/path/to/keyfile.pem
+명령으로 HTTPS/TLS에 필요한 certificate 파일과 key 파일의 경로를 전달한다.    
+
+
+```{r keycloak-docker, eval=FALSE, filename="projects/keycloak-server/docker-compose.yml"}
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: nmdose-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloakpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nmdose-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.0
+    container_name: nmdose-keycloak
+    command:
+      - start
+      - --https-certificate-file=/etc/x509/https/tls.crt
+      - --https-certificate-key-file=/etc/x509/https/tls.key
+      - --db=postgres
+      - --db-url-host=postgres
+      - --db-username=keycloak
+      - --db-password=keycloakpass
+      - --db-database=keycloak
+      - --hostname=localhost
+    environment:
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: adminpass
+    volumes:
+      # 인증서 마운트: 호스트 → 컨테이너
+      - /etc/nmdose/certs/server.crt:/etc/x509/https/tls.crt:ro
+      - /etc/nmdose/certs/server.key:/etc/x509/https/tls.key:ro
+    depends_on:
+      - postgres
+    ports:
+      - "8443:8443"
+    networks:
+      - nmdose-net
+
+volumes:
+  postgres_data:
+
+networks:
+  nmdose-net:
+    driver: bridge
+```
+
+
+```{r keycloak-docker-excute, eval=FALSE, filename="bash"}
+sudo docker compose up -d
+```
+
+```{r keycloak-docker-validation, eval=FALSE, filename="bash"}
+sudo docker compose ps
+```
+
+
